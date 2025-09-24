@@ -18,3 +18,30 @@
 if (! defined('ABSPATH')) {
     exit;
 }
+
+$emailBlocklist = new EmailBlocklist();
+
+class EmailBlocklist
+{
+    public function __construct()
+    {
+        register_activation_hook(__FILE__, [$this, 'pluginActivate']);
+        register_uninstall_hook(__FILE__, [$this, 'pluginUninstall']);
+        add_action('plugins_loaded', [$this, 'loadTextdomain']);
+    }
+
+    public function pluginActivate(): void
+    {
+        // todo
+    }
+
+    public function pluginUninstall(): void
+    {
+        // todo
+    }
+
+    public function loadTextdomain(): void
+    {
+        load_plugin_textdomain('email-blocklist');
+    }
+}
