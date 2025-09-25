@@ -23,6 +23,8 @@ $emailBlocklist = new EmailBlocklist();
 
 class EmailBlocklist
 {
+    const BLOCKLIST_RESOURCE_URL = 'https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist.json';
+
     public function __construct()
     {
         register_activation_hook(__FILE__, [$this, 'pluginActivate']);
@@ -55,6 +57,27 @@ class EmailBlocklist
         delete_option('eb_global_blocklist');
         delete_option('eb_local_blocklist');
         delete_option('eb_local_allowlist');
+    }
+
+    private function updateGlobalBlocklist(): bool
+    {
+        $response = wp_remote_get(self::BLOCKLIST_RESOURCE_URL);
+
+        if (is_wp_error($response)) {
+            return false;
+        }
+
+        $body = wp_remote_retrieve_body($response);
+
+        $decodedBody = json_decode($body);
+
+        if (! is_array($decodedBody)) {
+            return false;
+        }
+
+        update_option('eb_global_blocklist', $decodedBody);
+
+        return true;
     }
 
     public function loadTextdomain(): void
