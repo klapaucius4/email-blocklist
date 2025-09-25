@@ -26,7 +26,7 @@ class EmailBlocklist
     public function __construct()
     {
         register_activation_hook(__FILE__, [$this, 'pluginActivate']);
-        register_uninstall_hook(__FILE__, [$this, 'pluginUninstall']);
+        register_uninstall_hook(__FILE__, ['EmailBlocklist', 'pluginUninstall']);
         add_action('plugins_loaded', [$this, 'loadTextdomain']);
     }
 
@@ -49,7 +49,7 @@ class EmailBlocklist
         }
     }
 
-    public function pluginUninstall(): void
+    public static function pluginUninstall(): void
     {
         delete_option('eb_enabled');
         delete_option('eb_global_blacklist');
