@@ -19,6 +19,10 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
+require_once __DIR__ . '/vendor/autoload.php';
+
+use App\Helper;
+
 $emailBlocklist = new EmailBlocklist();
 
 class EmailBlocklist
@@ -64,6 +68,7 @@ class EmailBlocklist
         $response = wp_remote_get(self::BLOCKLIST_RESOURCE_URL);
 
         if (is_wp_error($response)) {
+            Helper::logError($response->get_error_message());
             return false;
         }
 
