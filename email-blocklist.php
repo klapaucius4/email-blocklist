@@ -36,25 +36,25 @@ class EmailBlocklist
             update_option('eb_enabled', 0, false);
         }
 
-        if (! get_option('eb_global_blacklist')) {
-            update_option('eb_global_blacklist', '', false);
+        if (! get_option('eb_global_blocklist')) {
+            update_option('eb_global_blocklist', '', false);
         }
 
-        if (! get_option('eb_local_blacklist')) {
-            update_option('eb_local_blacklist', '', false);
+        if (! get_option('eb_local_blocklist')) {
+            update_option('eb_local_blocklist', '', false);
         }
 
-        if (! get_option('eb_local_whitelist')) {
-            update_option('eb_local_whitelist', '', false);
+        if (! get_option('eb_local_allowlist')) {
+            update_option('eb_local_allowlist', '', false);
         }
     }
 
     public static function pluginUninstall(): void
     {
         delete_option('eb_enabled');
-        delete_option('eb_global_blacklist');
-        delete_option('eb_local_blacklist');
-        delete_option('eb_local_whitelist');
+        delete_option('eb_global_blocklist');
+        delete_option('eb_local_blocklist');
+        delete_option('eb_local_allowlist');
     }
 
     public function loadTextdomain(): void
