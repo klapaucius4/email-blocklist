@@ -32,12 +32,29 @@ class EmailBlocklist
 
     public function pluginActivate(): void
     {
-        // todo
+        if (! get_option('eb_enabled')) {
+            update_option('eb_enabled', 0, false);
+        }
+
+        if (! get_option('eb_global_blacklist')) {
+            update_option('eb_global_blacklist', '', false);
+        }
+
+        if (! get_option('eb_local_blacklist')) {
+            update_option('eb_local_blacklist', '', false);
+        }
+
+        if (! get_option('eb_local_whitelist')) {
+            update_option('eb_local_whitelist', '', false);
+        }
     }
 
     public function pluginUninstall(): void
     {
-        // todo
+        delete_option('eb_enabled');
+        delete_option('eb_global_blacklist');
+        delete_option('eb_local_blacklist');
+        delete_option('eb_local_whitelist');
     }
 
     public function loadTextdomain(): void
