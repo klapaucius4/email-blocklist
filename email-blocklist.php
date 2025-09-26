@@ -44,6 +44,7 @@ class EmailBlocklist
 
         if (! get_option('eb_global_blocklist')) {
             update_option('eb_global_blocklist', '', false);
+            $this->updateGlobalBlocklist();
         }
 
         if (! get_option('eb_local_blocklist')) {
