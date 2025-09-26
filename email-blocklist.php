@@ -43,7 +43,6 @@ class EmailBlocklist
         }
 
         if (! get_option('eb_global_blocklist')) {
-            update_option('eb_global_blocklist', '', false);
             $this->updateGlobalBlocklist();
         }
 
