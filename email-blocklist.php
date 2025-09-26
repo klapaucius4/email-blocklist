@@ -34,6 +34,8 @@ class EmailBlocklist
         register_activation_hook(__FILE__, [$this, 'pluginActivate']);
         register_uninstall_hook(__FILE__, ['EmailBlocklist', 'pluginUninstall']);
         add_action('plugins_loaded', [$this, 'loadTextdomain']);
+        add_action('admin_menu', array( $this, 'addSettingsPageToMenu'));
+        add_action('admin_init', array( $this, 'registerSettings'));
     }
 
     public function pluginActivate(): void
@@ -88,5 +90,31 @@ class EmailBlocklist
     public function loadTextdomain(): void
     {
         load_plugin_textdomain('email-blocklist');
+    }
+
+    public function addSettingsPageToMenu(): void
+    {
+        add_options_page(
+            __('Email Blocklist Settings', 'email-blocklist'),
+            __('Email Blocklist', 'email-blocklist'),
+            'manage_options',
+            'email-blocklist-settings',
+            [$this, 'renderSettingsPage']
+        );
+    }
+
+    public function renderSettingsPage(): void
+    {
+        include plugin_dir_path(__FILE__) . '/templates/admin-settings-page.php';
+    }
+
+    public function registerSettings()
+    {
+        register_setting('email-blocklist-settings-group', 'em_test', array($this, 'validateField'));
+    }
+
+    public function validateField($value)
+    {
+        return $value;
     }
 }
