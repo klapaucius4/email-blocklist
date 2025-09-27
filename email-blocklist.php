@@ -36,6 +36,7 @@ class EmailBlocklist
         add_action('plugins_loaded', [$this, 'loadTextdomain']);
         add_action('admin_menu', array( $this, 'addSettingsPageToMenu'));
         add_action('admin_init', array( $this, 'registerSettings'));
+        add_filter('plugin_action_links', [$this, 'addPluginActionLinks'], 10, 5);
     }
 
     public function pluginActivate(): void
@@ -116,5 +117,24 @@ class EmailBlocklist
     public function validateField($value)
     {
         return $value;
+    }
+
+    public function addPluginActionLinks(array $actions, string $pluginFile): array
+    {
+        static $plugin;
+
+        if (! isset($plugin)) {
+            $plugin = plugin_basename(__FILE__);
+        }
+
+        if ($plugin === $pluginFile) {
+            $settings = '<a href="' . esc_url(get_admin_url(null, 'options-general.php?page=email-blocklist-settings')) . '">' . __('Settings', 'email-blocklist') . '</a>';
+
+            $actions = array_merge(array(
+                'settings' => $settings,
+            ), $actions);
+        }
+
+        return $actions;
     }
 }
