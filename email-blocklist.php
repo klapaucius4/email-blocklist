@@ -34,8 +34,8 @@ class EmailBlocklist
         register_activation_hook(__FILE__, [$this, 'pluginActivate']);
         register_uninstall_hook(__FILE__, ['EmailBlocklist', 'pluginUninstall']);
         add_action('plugins_loaded', [$this, 'loadTextdomain']);
-        add_action('admin_menu', array( $this, 'addSettingsPageToMenu'));
-        add_action('admin_init', array( $this, 'registerSettings'));
+        add_action('admin_menu', [$this, 'addSettingsPageToMenu']);
+        add_action('admin_init', [$this, 'registerSettings']);
         add_filter('plugin_action_links', [$this, 'addPluginActionLinks'], 10, 5);
     }
 
@@ -111,7 +111,7 @@ class EmailBlocklist
 
     public function registerSettings()
     {
-        register_setting('email-blocklist-settings-group', 'em_test', array($this, 'validateField'));
+        register_setting('email-blocklist-settings-group', 'em_test', [$this, 'validateField']);
     }
 
     public function validateField($value)
@@ -130,9 +130,7 @@ class EmailBlocklist
         if ($plugin === $pluginFile) {
             $settings = '<a href="' . esc_url(get_admin_url(null, 'options-general.php?page=email-blocklist-settings')) . '">' . __('Settings', 'email-blocklist') . '</a>';
 
-            $actions = array_merge(array(
-                'settings' => $settings,
-            ), $actions);
+            $actions = array_merge(['settings' => $settings], $actions);
         }
 
         return $actions;
