@@ -111,7 +111,9 @@ class EmailBlocklist
 
     public function registerSettings()
     {
-        register_setting('email-blocklist-settings-group', 'em_test', [$this, 'validateField']);
+        register_setting('email-blocklist-settings-group', 'eb_enabled');
+        register_setting('email-blocklist-settings-group', 'eb_local_blocklist', [$this, 'validateField']);
+        register_setting('email-blocklist-settings-group', 'eb_local_allowlist', [$this, 'validateField']);
     }
 
     public function validateField($value)
