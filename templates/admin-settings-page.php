@@ -32,7 +32,7 @@ if (! defined('ABSPATH')) {
                     </label>
                 </th>
                 <td>
-                    <textarea rows="3" class="regular-text" id="eb_local_blocklist" name="eb_local_blocklist"><?php echo esc_attr(get_option('eb_local_blocklist')); ?></textarea>
+                    <textarea rows="8" class="regular-text" id="eb_local_blocklist" name="eb_local_blocklist"><?php echo esc_attr(get_option('eb_local_blocklist')); ?></textarea>
                     <p class="description"><?php _e('One domain name per line.', 'email-blocklist') ?></p>
                 </td>
             </tr>
@@ -43,8 +43,18 @@ if (! defined('ABSPATH')) {
                     </label>
                 </th>
                 <td>
-                    <textarea rows="3" class="regular-text" id="eb_local_allowlist" name="eb_local_allowlist"><?php echo esc_attr(get_option('eb_local_allowlist')); ?></textarea>
+                    <textarea rows="8" class="regular-text" id="eb_local_allowlist" name="eb_local_allowlist"><?php echo esc_attr(get_option('eb_local_allowlist')); ?></textarea>
                     <p class="description"><?php _e('One domain name per line.', 'email-blocklist') ?></p>
+                </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row">
+                    <label for="eb_global_blocklist">
+                        <?php _e('Global blocklist', 'email-blocklist') ?> (todo)
+                    </label>
+                </th>
+                <td>
+                    <textarea rows="8" class="regular-text" id="eb_global_blocklist" name="eb_global_blocklist" disabled><?php //todo ?></textarea>
                 </td>
             </tr>
         </table>

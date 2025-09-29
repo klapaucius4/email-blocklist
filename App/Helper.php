@@ -8,4 +8,9 @@ class Helper
     {
         error_log(__('Error from the Email Blocklist plugin:', 'email-blocklist') . ' ' . $errorContent);
     }
+
+    public static function getGlobalBlocklist(): array
+    {
+        return [];
+    }
 }
