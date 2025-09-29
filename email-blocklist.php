@@ -45,10 +45,6 @@ class EmailBlocklist
             update_option('eb_enabled', 0, false);
         }
 
-        if (! get_option('eb_global_blocklist')) {
-            $this->updateGlobalBlocklist();
-        }
-
         if (! get_option('eb_local_blocklist')) {
             update_option('eb_local_blocklist', '', false);
         }
@@ -56,14 +52,18 @@ class EmailBlocklist
         if (! get_option('eb_local_allowlist')) {
             update_option('eb_local_allowlist', '', false);
         }
+
+        if (! get_option('eb_global_blocklist')) {
+            $this->updateGlobalBlocklist();
+        }
     }
 
     public static function pluginUninstall(): void
     {
         delete_option('eb_enabled');
-        delete_option('eb_global_blocklist');
         delete_option('eb_local_blocklist');
         delete_option('eb_local_allowlist');
+        delete_option('eb_global_blocklist');
     }
 
     private function updateGlobalBlocklist(): bool
