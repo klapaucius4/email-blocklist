@@ -4,6 +4,10 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use App\Helper;
+
 ?>
 
 <div class="wrap">
@@ -28,33 +32,36 @@ if (! defined('ABSPATH')) {
             <tr>
                 <th scope="row">
                     <label for="eb_local_blocklist">
-                        <?php _e('Local blocklist', 'email-blocklist') ?> (<?php echo count(array_filter(explode("\n", get_option('eb_local_blocklist')))); ?>)
+                        <?php _e('Local blocklist', 'email-blocklist') ?> (<?php echo Helper::getCounOfLinexOfField('eb_local_blocklist'); ?>)
                     </label>
                 </th>
                 <td>
-                    <textarea rows="8" class="regular-text" id="eb_local_blocklist" name="eb_local_blocklist"><?php echo esc_attr(get_option('eb_local_blocklist')); ?></textarea>
+                    <textarea rows="8" class="regular-text" id="eb_local_blocklist" name="eb_local_blocklist"><?php echo esc_textarea(get_option('eb_local_blocklist')); ?></textarea>
                     <p class="description"><?php _e('One domain name per line.', 'email-blocklist') ?></p>
                 </td>
             </tr>
             <tr valign="top">
                 <th scope="row">
                     <label for="eb_local_allowlist">
-                        <?php _e('Local allowlist', 'email-blocklist') ?> (<?php echo count(array_filter(explode("\n", get_option('eb_local_allowlist')))); ?>)
+                        <?php _e('Local allowlist', 'email-blocklist') ?> (<?php echo Helper::getCounOfLinexOfField('eb_local_allowlist'); ?>)
                     </label>
                 </th>
                 <td>
-                    <textarea rows="8" class="regular-text" id="eb_local_allowlist" name="eb_local_allowlist"><?php echo esc_attr(get_option('eb_local_allowlist')); ?></textarea>
+                    <textarea rows="8" class="regular-text" id="eb_local_allowlist" name="eb_local_allowlist"><?php echo esc_textarea(get_option('eb_local_allowlist')); ?></textarea>
                     <p class="description"><?php _e('One domain name per line.', 'email-blocklist') ?></p>
                 </td>
             </tr>
             <tr valign="top">
                 <th scope="row">
                     <label for="eb_global_blocklist">
-                        <?php _e('Global blocklist', 'email-blocklist') ?> (todo)
+                        <?php _e('Global blocklist', 'email-blocklist') ?>
                     </label>
+                    <p style="margin: 0; font-weight: 300;"><?php _e('Count', 'email-blocklist'); ?>: <?php echo Helper::getGlobalBlocklistCount(); ?></p>
+                    <p style="margin: 0; font-weight: 300;"><?php _e('Update date', 'email-blocklist'); ?>: </p>
                 </th>
                 <td>
-                    <textarea rows="8" class="regular-text" id="eb_global_blocklist" name="eb_global_blocklist" disabled><?php //todo ?></textarea>
+                    <textarea rows="8" class="regular-text" id="eb_global_blocklist" name="eb_global_blocklist" disabled><?php echo Helper::getGlobalBlocklist(true); ?></textarea>
+                    <p class="description"><?php _e('Domains fetched from the global database. If you want to disable blocking for any of them, add it above to the \'Local allowlist\' field.', 'email-blocklist') ?></p>
                 </td>
             </tr>
         </table>
