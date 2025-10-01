@@ -28,6 +28,7 @@ $emailBlocklist = new EmailBlocklist();
 class EmailBlocklist
 {
     const BLOCKLIST_RESOURCE_URL = 'https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist.json';
+    const BLOCKLIST_META_RESOURCE_URL = 'https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist-meta.json';
 
     public function __construct()
     {
@@ -53,9 +54,7 @@ class EmailBlocklist
             update_option('eb_local_allowlist', '', false);
         }
 
-        if (! get_option('eb_global_blocklist')) {
-            $this->updateGlobalBlocklist();
-        }
+        $this->updateGlobalBlocklist();
     }
 
     public static function pluginUninstall(): void
@@ -64,26 +63,41 @@ class EmailBlocklist
         delete_option('eb_local_blocklist');
         delete_option('eb_local_allowlist');
         delete_option('eb_global_blocklist');
+        delete_option('eb_global_blocklist_version');
     }
 
     private function updateGlobalBlocklist(): bool
     {
-        $response = wp_remote_get(self::BLOCKLIST_RESOURCE_URL);
+        $blocklistMetaResponse = wp_remote_get(self::BLOCKLIST_META_RESOURCE_URL);
 
-        if (is_wp_error($response)) {
-            Helper::logError($response->get_error_message());
+        if (is_wp_error($blocklistMetaResponse)) {
+            Helper::logError($blocklistMetaResponse->get_error_message());
             return false;
         }
 
-        $body = wp_remote_retrieve_body($response);
+        $globalBlocklist = get_option('eb_global_blocklist', []);
+        $globalBlocklistVersion = get_option('eb_global_blocklist_version', 0);
+        $decodedBlockMetalistBody = json_decode(wp_remote_retrieve_body($blocklistMetaResponse));
 
-        $decodedBody = json_decode($body);
+        if (! empty($globalBlocklist) && $globalBlocklistVersion >= $decodedBlockMetalistBody->blocklist_version) {
+            return true;
+        }
 
-        if (! is_array($decodedBody)) {
+        $blocklistResponse = wp_remote_get(self::BLOCKLIST_RESOURCE_URL);
+
+        if (is_wp_error($blocklistResponse)) {
+            Helper::logError($blocklistResponse->get_error_message());
             return false;
         }
 
-        update_option('eb_global_blocklist', $decodedBody);
+        $decodedBlocklistBody = json_decode(wp_remote_retrieve_body($blocklistResponse));
+
+        if (! is_array($decodedBlocklistBody)) {
+            return false;
+        }
+
+        update_option('eb_global_blocklist', $decodedBlocklistBody);
+        update_option('eb_global_blocklist_version', $decodedBlockMetalistBody->blocklist_version);
 
         return true;
     }
