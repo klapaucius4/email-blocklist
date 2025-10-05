@@ -34,6 +34,7 @@ use App\Helper;
                     <label for="eb_local_blocklist">
                         <?php _e('Local blocklist', 'email-blocklist') ?> (<?php echo Helper::getCounOfLinexOfField('eb_local_blocklist'); ?>)
                     </label>
+                    <p class="label-desc"><?php _e('Enter domain names separated by a new line. You can also enter a full email address - in this case, only that specific address will be blocked - other addresses in the same domain will not be blocked.', 'email-blocklist'); ?></p>
                 </th>
                 <td>
                     <textarea rows="8" class="regular-text" id="eb_local_blocklist" name="eb_local_blocklist"><?php echo esc_textarea(get_option('eb_local_blocklist')); ?></textarea>
