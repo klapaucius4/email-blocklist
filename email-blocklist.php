@@ -38,6 +38,7 @@ class EmailBlocklist
         add_action('admin_menu', [$this, 'addSettingsPageToMenu']);
         add_action('admin_init', [$this, 'registerSettings']);
         add_filter('plugin_action_links', [$this, 'addPluginActionLinks'], 10, 5);
+        add_action('admin_enqueue_scripts', [$this, 'loadAdminStyle']);
     }
 
     public function pluginActivate(): void
@@ -150,5 +151,10 @@ class EmailBlocklist
         }
 
         return $actions;
+    }
+
+    public function loadAdminStyle()
+    {
+        wp_enqueue_style('eb_admin_css', plugin_dir_path(__FILE__) . '/assets/admin-style.css', false, '1.0.0');
     }
 }

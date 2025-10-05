@@ -57,8 +57,8 @@ use App\Helper;
                     <label for="eb_global_blocklist">
                         <?php _e('Global blocklist', 'email-blocklist') ?>
                     </label>
-                    <p style="margin: 0; font-weight: 300;"><?php _e('Count', 'email-blocklist'); ?>: <?php echo Helper::getGlobalBlocklistCount(); ?></p>
-                    <p style="margin: 0; font-weight: 300;"><?php _e('Update date', 'email-blocklist'); ?>: </p>
+                    <p class="label-desc"><?php _e('Count', 'email-blocklist'); ?>: <?php echo Helper::getGlobalBlocklistCount(); ?></p>
+                    <p class="label-desc"><?php _e('Update date', 'email-blocklist'); ?>: </p>
                 </th>
                 <td>
                     <textarea rows="8" class="regular-text" id="eb_global_blocklist" name="eb_global_blocklist" disabled><?php echo Helper::getGlobalBlocklist(true); ?></textarea>
