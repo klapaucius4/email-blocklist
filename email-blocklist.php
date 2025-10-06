@@ -55,6 +55,10 @@ class EmailBlocklist
             update_option('eb_local_allowlist', '', false);
         }
 
+        if (! get_option('eb_global_blocklist_enabled')) {
+            update_option('eb_global_blocklist_enabled', 1, false);
+        }
+
         $this->updateGlobalBlocklist();
     }
 
@@ -64,6 +68,7 @@ class EmailBlocklist
         delete_option('eb_local_blocklist');
         delete_option('eb_local_allowlist');
         delete_option('eb_global_blocklist');
+        delete_option('eb_global_blocklist_enabled');
         delete_option('eb_global_blocklist_version');
     }
 
@@ -129,6 +134,7 @@ class EmailBlocklist
         register_setting('email-blocklist-settings-group', 'eb_enabled');
         register_setting('email-blocklist-settings-group', 'eb_local_blocklist', [$this, 'validateField']);
         register_setting('email-blocklist-settings-group', 'eb_local_allowlist', [$this, 'validateField']);
+        register_setting('email-blocklist-settings-group', 'eb_global_blocklist_enabled');
     }
 
     public function validateField($value)

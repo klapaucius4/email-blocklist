@@ -52,6 +52,16 @@ use App\Helper;
                     <p class="description"><?php _e('One domain name per line.', 'email-blocklist') ?></p>
                 </td>
             </tr>
+            <tr>
+                <th scope="row">
+                    <label for="eb_global_blocklist_enabled">
+                        <?php _e('Global blocklist enabled', 'email-blocklist') ?>
+                    </label>
+                </th>
+                <td>
+                    <input type="checkbox" id="eb_global_blocklist_enabled" name="eb_global_blocklist_enabled" value="1" <?php checked('1', get_option('eb_global_blocklist_enabled')); ?> />
+                </td>
+            </tr>
             <tr valign="top">
                 <th scope="row">
                     <label for="eb_global_blocklist">
