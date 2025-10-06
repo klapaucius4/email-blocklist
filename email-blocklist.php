@@ -155,6 +155,6 @@ class EmailBlocklist
 
     public function loadAdminStyle()
     {
-        wp_enqueue_style('eb_admin_css', plugin_dir_path(__FILE__) . '/assets/admin-style.css', false, '1.0.0');
+        wp_enqueue_style('eb_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.0.0');
     }
 }
