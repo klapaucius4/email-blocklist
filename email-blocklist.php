@@ -133,14 +133,17 @@ class EmailBlocklist
     public function registerSettings()
     {
         register_setting('email-blocklist-settings-group', 'eb_enabled');
-        register_setting('email-blocklist-settings-group', 'eb_local_blocklist', [$this, 'validateField']);
-        register_setting('email-blocklist-settings-group', 'eb_local_allowlist', [$this, 'validateField']);
+        register_setting('email-blocklist-settings-group', 'eb_local_blocklist', [
+            'sanitize_callback' => [Helper::class, 'sanitizeDomainsList'],
+            'type' => 'string',
+            'default' => '',
+        ]);
+        register_setting('email-blocklist-settings-group', 'eb_local_allowlist', [
+            'sanitize_callback' => [Helper::class, 'sanitizeDomainsList'],
+            'type' => 'string',
+            'default' => '',
+        ]);
         register_setting('email-blocklist-settings-group', 'eb_global_blocklist_enabled');
-    }
-
-    public function validateField($value)
-    {
-        return $value;
     }
 
     public function addPluginActionLinks(array $actions, string $pluginFile): array
