@@ -39,6 +39,7 @@ class EmailBlocklist
         add_action('admin_init', [$this, 'registerSettings']);
         add_filter('plugin_action_links', [$this, 'addPluginActionLinks'], 10, 5);
         add_action('admin_enqueue_scripts', [$this, 'loadAdminStyle']);
+        add_filter('is_email', [$this, 'isEmail'], 10, 2);
     }
 
     public function pluginActivate(): void
@@ -162,5 +163,10 @@ class EmailBlocklist
     public function loadAdminStyle()
     {
         wp_enqueue_style('eb_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.0.0');
+    }
+
+    public function isEmail(string|false $isEmail, string $email): bool
+    {
+        // todoa
     }
 }
