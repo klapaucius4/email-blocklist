@@ -76,6 +76,16 @@ use App\Helper;
                     <p class="description"><?php _e('Domains fetched from the global database. If you want to disable blocking for any of them, add it above to the \'Local allowlist\' field.', 'email-blocklist') ?></p>
                 </td>
             </tr>
+            <tr>
+                <th scope="row">
+                    <label for="eb_block_plus_emails">
+                        <?php _e('Block "+" emails', 'email-blocklist') ?>
+                    </label>
+                </th>
+                <td>
+                    <input type="checkbox" id="eb_block_plus_emails" name="eb_block_plus_emails" value="1" <?php checked('1', get_option('eb_block_plus_emails')); ?> />
+                </td>
+            </tr>
         </table>
 
         <?php submit_button(); ?>
