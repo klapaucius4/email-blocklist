@@ -61,7 +61,7 @@ class EmailBlocklist
         }
 
         if (! get_option('eb_block_plus_emails')) {
-            update_option('eb_block_plus_emails', 0, false);
+            update_option('eb_block_plus_emails', 1, false);
         }
 
         $this->updateGlobalBlocklist();
