@@ -64,6 +64,14 @@ class EmailBlocklist
             update_option('eb_block_plus_emails', 1, false);
         }
 
+        if (! get_option('eb_protect_signup_submissions')) {
+            update_option('eb_protect_signup_submissions', 1, false);
+        }
+
+        if (! get_option('eb_protect_comment_submissions')) {
+            update_option('eb_protect_comment_submissions', 1, false);
+        }
+
         $this->updateGlobalBlocklist();
     }
 
@@ -76,6 +84,8 @@ class EmailBlocklist
         delete_option('eb_global_blocklist_enabled');
         delete_option('eb_global_blocklist_version');
         delete_option('eb_block_plus_emails');
+        delete_option('eb_protect_signup_submissions');
+        delete_option('eb_protect_comment_submissions');
     }
 
     private function updateGlobalBlocklist(): bool
@@ -150,6 +160,8 @@ class EmailBlocklist
         ]);
         register_setting('email-blocklist-settings-group', 'eb_global_blocklist_enabled');
         register_setting('email-blocklist-settings-group', 'eb_block_plus_emails');
+        register_setting('email-blocklist-settings-group', 'eb_protect_signup_submissions');
+        register_setting('email-blocklist-settings-group', 'eb_protect_comment_submissions');
     }
 
     public function addPluginActionLinks(array $actions, string $pluginFile): array

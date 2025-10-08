@@ -86,6 +86,26 @@ use App\Helper;
                     <input type="checkbox" id="eb_block_plus_emails" name="eb_block_plus_emails" value="1" <?php checked('1', get_option('eb_block_plus_emails')); ?> />
                 </td>
             </tr>
+            <tr>
+                <th scope="row">
+                    <label for="eb_protect_signup_submissions">
+                        <?php _e('Protect signup submissions', 'email-blocklist') ?>
+                    </label>
+                </th>
+                <td>
+                    <input type="checkbox" id="eb_protect_signup_submissions" name="eb_protect_signup_submissions" value="1" <?php checked('1', get_option('eb_protect_signup_submissions')); ?> />
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <label for="eb_protect_comment_submissions">
+                        <?php _e('Protect comment submissions', 'email-blocklist') ?>
+                    </label>
+                </th>
+                <td>
+                    <input type="checkbox" id="eb_protect_comment_submissions" name="eb_protect_comment_submissions" value="1" <?php checked('1', get_option('eb_protect_comment_submissions')); ?> />
+                </td>
+            </tr>
         </table>
 
         <?php submit_button(); ?>
