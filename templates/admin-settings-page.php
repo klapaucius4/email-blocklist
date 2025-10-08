@@ -38,7 +38,7 @@ use App\Helper;
                 </th>
                 <td>
                     <textarea rows="8" class="regular-text" id="eb_local_blocklist" name="eb_local_blocklist"><?php echo esc_textarea(get_option('eb_local_blocklist')); ?></textarea>
-                    <p class="description"><?php _e('One domain name per line.', 'email-blocklist') ?></p>
+                    <p class="description"><?php _e('One domain name or email address per line.', 'email-blocklist') ?></p>
                 </td>
             </tr>
             <tr valign="top">
@@ -50,7 +50,7 @@ use App\Helper;
                 </th>
                 <td>
                     <textarea rows="8" class="regular-text" id="eb_local_allowlist" name="eb_local_allowlist"><?php echo esc_textarea(get_option('eb_local_allowlist')); ?></textarea>
-                    <p class="description"><?php _e('One domain name per line.', 'email-blocklist') ?></p>
+                    <p class="description"><?php _e('One domain name or email address per line.', 'email-blocklist') ?></p>
                 </td>
             </tr>
             <tr>
