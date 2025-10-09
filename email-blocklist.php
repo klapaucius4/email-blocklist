@@ -60,6 +60,8 @@ class EmailBlocklist
             update_option('eb_global_blocklist_enabled', 1, false);
         }
 
+        $this->updateGlobalBlocklist();
+
         if (! get_option('eb_block_plus_emails')) {
             update_option('eb_block_plus_emails', 1, false);
         }
@@ -71,8 +73,6 @@ class EmailBlocklist
         if (! get_option('eb_protect_comment_submissions')) {
             update_option('eb_protect_comment_submissions', 1, false);
         }
-
-        $this->updateGlobalBlocklist();
     }
 
     public static function pluginUninstall(): void
@@ -80,8 +80,8 @@ class EmailBlocklist
         delete_option('eb_enabled');
         delete_option('eb_local_blocklist');
         delete_option('eb_local_allowlist');
-        delete_option('eb_global_blocklist');
         delete_option('eb_global_blocklist_enabled');
+        delete_option('eb_global_blocklist');
         delete_option('eb_global_blocklist_version');
         delete_option('eb_block_plus_emails');
         delete_option('eb_protect_signup_submissions');
