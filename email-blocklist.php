@@ -75,6 +75,10 @@ class EmailBlocklist
         if (! get_option('eb_protect_comment_submissions')) {
             update_option('eb_protect_comment_submissions', 1, false);
         }
+
+        if (! get_option('eb_blocked_email_notice_text')) {
+            update_option('eb_blocked_email_notice_text', '', false);
+        }
     }
 
     public static function pluginUninstall(): void
@@ -88,6 +92,7 @@ class EmailBlocklist
         delete_option('eb_block_plus_emails');
         delete_option('eb_protect_signup_submissions');
         delete_option('eb_protect_comment_submissions');
+        delete_option('eb_blocked_email_notice_text');
     }
 
     private function updateGlobalBlocklist(): bool
@@ -164,6 +169,11 @@ class EmailBlocklist
         register_setting('email-blocklist-settings-group', 'eb_block_plus_emails');
         register_setting('email-blocklist-settings-group', 'eb_protect_signup_submissions');
         register_setting('email-blocklist-settings-group', 'eb_protect_comment_submissions');
+        register_setting('email-blocklist-settings-group', 'eb_blocked_email_notice_text', [
+            'sanitize_callback' => 'sanitize_text_field',
+            'type' => 'string',
+            'default' => Helper::getDefaultString('blocked_email_notice_text')
+        ]);
     }
 
     public function addPluginActionLinks(array $actions, string $pluginFile): array
@@ -206,7 +216,7 @@ class EmailBlocklist
         }
 
         if (Helper::checkIfEmailIsBlocked($email)) {
-            $errors->add('eb_blocked_email', __('The email address provided is not allowed. Please use a another one.', 'email-blocklist'));
+            $errors->add('eb_blocked_email', get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text')));
         }
 
         return $errors;

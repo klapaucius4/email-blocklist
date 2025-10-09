@@ -106,6 +106,16 @@ use App\Helper;
                     <input type="checkbox" id="eb_protect_comment_submissions" name="eb_protect_comment_submissions" value="1" <?php checked('1', get_option('eb_protect_comment_submissions')); ?> />
                 </td>
             </tr>
+            <tr>
+                <th scope="row">
+                    <label for="eb_blocked_email_notice_text">
+                        <?php _e('Email blocked notice', 'email-blocklist') ?>
+                    </label>
+                </th>
+                <td>
+                    <input type="text" id="eb_blocked_email_notice_text" name="eb_blocked_email_notice_text" value="<?php echo get_option('eb_blocked_email_notice_text'); ?>" placeholder="<?php echo Helper::getDefaultString('blocked_email_notice_text'); ?>" />
+                </td>
+            </tr>
         </table>
 
         <?php submit_button(); ?>

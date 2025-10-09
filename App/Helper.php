@@ -140,6 +140,15 @@ class Helper
         return false;
     }
 
+    public static function getDefaultString(string $name): string
+    {
+        if ($name === 'blocked_email_notice_text') {
+            return __('The email address you entered is not allowed. Please use a another one.', 'email-blocklist');
+        }
+
+        return '';
+    }
+
     private static function isLoginRequest()
     {
         global $pagenow;
