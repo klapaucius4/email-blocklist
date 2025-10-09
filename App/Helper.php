@@ -94,4 +94,55 @@ class Helper
     {
         return (preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $domainName) && preg_match("/^.{1,253}$/", $domainName) && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $domainName));
     }
+
+    public static function checkIfEmailIsBlocked(string $email): bool
+    {
+        $email = strtolower(trim($email));
+
+        if (! is_email($email)) {
+            return false;
+        }
+
+        $domain = substr(strrchr($email, "@"), 1);
+
+        $localBlocklist = get_option('eb_local_blocklist', '');
+        $localAllowlist = get_option('eb_local_allowlist', '');
+
+        $localBlocklistArray = array_map('strtolower', array_filter(array_map('trim', explode("\n", $localBlocklist))));
+        $localAllowlistArray = array_map('strtolower', array_filter(array_map('trim', explode("\n", $localAllowlist))));
+
+        if (in_array($email, $localAllowlistArray, true) || in_array($domain, $localAllowlistArray, true)) {
+            return false;
+        }
+
+        if (in_array($email, $localBlocklistArray, true) || in_array($domain, $localBlocklistArray, true)) {
+            return true;
+        }
+
+        if (get_option('eb_global_blocklist_enabled')) {
+            $globalBlocklist = get_option('eb_global_blocklist', []);
+            $globalBlocklist = array_map('strtolower', array_filter(array_map('trim', $globalBlocklist)));
+
+            if (in_array($email, $globalBlocklist, true) || in_array($domain, $globalBlocklist, true)) {
+                return true;
+            }
+        }
+
+        if (get_option('eb_block_plus_emails')) {
+            if (substr($email, 0, strpos($email, '@')) !== false) {
+                $plusEmail = substr($email, 0, strpos($email, '@')) . '+' . substr($email, strpos($email, '@'));
+                if (in_array($plusEmail, $localBlocklistArray, true) || in_array($plusEmail, $globalBlocklist ?? [], true)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static function isLoginRequest()
+    {
+        global $pagenow;
+        return $pagenow === 'wp-login.php';
+    }
 }
