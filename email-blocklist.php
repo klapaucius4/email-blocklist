@@ -39,7 +39,9 @@ class EmailBlocklist
         add_action('admin_init', [$this, 'registerSettings']);
         add_filter('plugin_action_links', [$this, 'addPluginActionLinks'], 10, 5);
         add_action('admin_enqueue_scripts', [$this, 'loadAdminStyle']);
-        add_filter('is_email', [$this, 'isEmail'], 10, 2);
+
+        add_filter('registration_errors', [$this, 'protectSignupEmail'], 10, 3);
+        // add_action('user_profile_update_errors', [], 10, 3);
     }
 
     public function pluginActivate(): void
@@ -186,8 +188,27 @@ class EmailBlocklist
         wp_enqueue_style('eb_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.0.0');
     }
 
-    public function isEmail(string|false $isEmail, string $email): bool
+    public function protectSignupEmail(WP_Error $errors, string $sanitizedUserLogin,  string $userEmail): WP_Error
     {
-        // todoa
+        if (! get_option('eb_protect_signup_submissions')) {
+            return $errors;
+        }
+
+        $email = '';
+
+        if (is_object($userEmail) && isset($userEmail->user_email)) {
+            $email = $userEmail->user_email;
+        } elseif (is_string($userEmail)) {
+            $email = $userEmail;
+        } else {
+            $errors->add('eb_invalid_email', __('Invalid email address.', 'email-blocklist'));
+            return $errors;
+        }
+
+        if (Helper::checkIfEmailIsBlocked($email)) {
+            $errors->add('eb_blocked_email', __('The email address provided is not allowed. Please use a another one.', 'email-blocklist'));
+        }
+
+        return $errors;
     }
 }
