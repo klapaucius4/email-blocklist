@@ -146,6 +146,13 @@ class Helper
             return __('The email address you entered is not allowed. Please use a another one.', 'email-blocklist');
         }
 
+        if ($name === 'domain_list_placeholder') {
+            $string = __('exampledomain.com', 'email-blocklist') . "\n";
+            $string .= __('another-domain.pl', 'email-blocklist') . "\n";
+            $string .= __('example@mail.com', 'email-blocklist') . "\n";
+            return $string;
+        }
+
         return '';
     }
 

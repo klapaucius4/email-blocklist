@@ -37,7 +37,7 @@ use App\Helper;
                     <p class="label-desc"><?php _e('Enter domain names (one per line) to block them. You can also enter a full email address - in this case, only that specific address will be blocked.', 'email-blocklist'); ?></p>
                 </th>
                 <td>
-                    <textarea rows="8" class="regular-text" id="eb_local_blocklist" name="eb_local_blocklist"><?php echo esc_textarea(get_option('eb_local_blocklist')); ?></textarea>
+                    <textarea rows="8" class="regular-text" id="eb_local_blocklist" name="eb_local_blocklist" placeholder="<?php echo Helper::getDefaultString('domain_list_placeholder'); ?>"><?php echo esc_textarea(get_option('eb_local_blocklist')); ?></textarea>
                     <p class="description"><?php _e('One domain name or email address per line.', 'email-blocklist') ?></p>
                 </td>
             </tr>
@@ -49,7 +49,7 @@ use App\Helper;
                     <p class="label-desc"><?php _e('Enter domain names, one per line, to exclude them from being blocked. You can also enter a full email address - then this specyfic email will be excluded from being blocked.', 'email-blocklist'); ?></p>
                 </th>
                 <td>
-                    <textarea rows="8" class="regular-text" id="eb_local_allowlist" name="eb_local_allowlist"><?php echo esc_textarea(get_option('eb_local_allowlist')); ?></textarea>
+                    <textarea rows="8" class="regular-text" id="eb_local_allowlist" name="eb_local_allowlist" placeholder="<?php echo Helper::getDefaultString('domain_list_placeholder'); ?>"><?php echo esc_textarea(get_option('eb_local_allowlist')); ?></textarea>
                     <p class="description"><?php _e('One domain name or email address per line.', 'email-blocklist') ?></p>
                 </td>
             </tr>
