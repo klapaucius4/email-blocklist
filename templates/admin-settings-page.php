@@ -113,7 +113,7 @@ use App\Helper;
                     </label>
                 </th>
                 <td>
-                    <input type="text" id="eb_blocked_email_notice_text" name="eb_blocked_email_notice_text" value="<?php echo get_option('eb_blocked_email_notice_text'); ?>" placeholder="<?php echo Helper::getDefaultString('blocked_email_notice_text'); ?>" />
+                    <input type="text" id="eb_blocked_email_notice_text" class="regular-text" name="eb_blocked_email_notice_text" value="<?php echo get_option('eb_blocked_email_notice_text'); ?>" placeholder="<?php echo Helper::getDefaultString('blocked_email_notice_text'); ?>" />
                 </td>
             </tr>
         </table>
