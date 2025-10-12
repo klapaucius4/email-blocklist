@@ -156,12 +156,16 @@ class EmailBlocklist
     {
         register_setting('email-blocklist-settings-group', 'eb_enabled');
         register_setting('email-blocklist-settings-group', 'eb_local_blocklist', [
-            'sanitize_callback' => [Helper::class, 'sanitizeDomainsList'],
+            'sanitize_callback' => function($value) {
+                return Helper::sanitizeListField($value, 'eb_local_blocklist');
+            },
             'type' => 'string',
             'default' => '',
         ]);
         register_setting('email-blocklist-settings-group', 'eb_local_allowlist', [
-            'sanitize_callback' => [Helper::class, 'sanitizeDomainsList'],
+            'sanitize_callback' => function($value) {
+                return Helper::sanitizeListField($value, 'eb_local_allowlist');
+            },
             'type' => 'string',
             'default' => '',
         ]);

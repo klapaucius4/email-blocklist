@@ -4,6 +4,8 @@ namespace App;
 
 class Helper
 {
+    const INVALID_CHARS_OF_LIST_FIELD = [',',';','"',"'",'<','>','(',')'];
+
     public static function logError(string $errorContent): void
     {
         error_log(__('Error from the Email Blocklist plugin:', 'email-blocklist') . ' ' . $errorContent);
@@ -43,21 +45,33 @@ class Helper
         return count(get_option('eb_global_blocklist', []));
     }
 
-    public static function sanitizeDomainsList(string $input): string
+    public static function sanitizeListField(string $inputValue, string $settingName): string
     {
-        if (is_array($input)) {
-            $input = implode("\n", $input);
-        }
-        $input = (string) $input;
+        if (! self::validateListField($inputValue)) {
+            $errorMessage = sprintf(
+                __('The field \'%s\' contains invalid characters. Please correct it.', 'email-blocklist'),
+                $settingName
+            );
 
-        $lines = preg_split('/\r\n|\r|\n/', $input);
+            add_settings_error($settingName, 'invalid_field', $errorMessage, 'error');
+
+            return get_option($settingName);
+        }
+
+        if (is_array($inputValue)) {
+            $inputValue = implode("\n", $inputValue);
+        }
+
+        $inputValue = (string) $inputValue;
+
+        $lines = preg_split('/\r\n|\r|\n/', $inputValue);
 
         $validated = [];
 
         foreach ($lines as $line) {
             $line = trim($line);
             $line = preg_replace('/[\x00-\x1F\x7F\x{200B}-\x{200F}]+/u', '', $line);
-            $line = str_replace([',',';','"',"'",'<','>','(',')'], '', $line);
+            $line = str_replace(self::INVALID_CHARS_OF_LIST_FIELD, '', $line);
             $line = preg_replace('/\s+/', '', $line);
 
             if ($line === '') {
@@ -88,6 +102,15 @@ class Helper
         $validated = array_values(array_unique($validated));
 
         return implode("\n", $validated);
+    }
+
+    private static function validateListField(string $inputValue): bool
+    {
+        if (strpbrk($inputValue, implode('', SELF::INVALID_CHARS_OF_LIST_FIELD)) !== false) {
+            return false;
+        }
+
+        return true;
     }
 
     public static function isValidDomainName($domainName)
