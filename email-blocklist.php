@@ -47,7 +47,7 @@ class EmailBlocklist
     public function pluginActivate(): void
     {
         if (! get_option('eb_enabled')) {
-            update_option('eb_enabled', 0, false);
+            update_option('eb_enabled', 1, false);
         }
 
         if (! get_option('eb_local_blocklist')) {
