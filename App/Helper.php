@@ -47,55 +47,35 @@ class Helper
 
     public static function sanitizeListField(string $inputValue, string $settingName): string
     {
-        if (! self::validateListField($inputValue)) {
+        if (!self::validateListField($inputValue)) {
             $errorMessage = sprintf(
-                __('The field \'%s\' contains invalid characters. Please correct it.', 'email-blocklist'),
+                __('The field "%s" contains invalid characters. Please correct it.', 'email-blocklist'),
                 $settingName
             );
 
             add_settings_error($settingName, 'invalid_field', $errorMessage, 'error');
 
-            return get_option($settingName);
+            return (string) get_option($settingName);
         }
 
         if (is_array($inputValue)) {
             $inputValue = implode("\n", $inputValue);
         }
 
-        $inputValue = (string) $inputValue;
-
-        $lines = preg_split('/\r\n|\r|\n/', $inputValue);
-
+        $lines = preg_split('/\r\n|\r|\n/', (string) $inputValue);
         $validated = [];
 
         foreach ($lines as $line) {
-            $line = trim($line);
-            $line = preg_replace('/[\x00-\x1F\x7F\x{200B}-\x{200F}]+/u', '', $line);
-            $line = str_replace(self::INVALID_CHARS_OF_LIST_FIELD, '', $line);
-            $line = preg_replace('/\s+/', '', $line);
+            $normalized = self::normalizeListLine($line);
 
-            if ($line === '') {
+            if ($normalized === null) {
                 continue;
             }
 
-            if (strpos($line, '@') !== false) {
-                $sanitizedEmail = sanitize_email($line);
-                if ($sanitizedEmail && filter_var($sanitizedEmail, FILTER_VALIDATE_EMAIL)) {
-                    $validated[] = $sanitizedEmail;
-                }
+            $sanitized = self::sanitizeEmailOrDomain($normalized);
 
-                continue;
-            }
-
-            $host = preg_replace('#^https?://#i', '', $line);
-            $host = preg_replace('#/.*$#', '', $host);
-            $host = ltrim($host, '@');
-
-            $host = strtolower($host);
-
-
-            if (Helper::isValidDomainName($host)) {
-                $validated[] = sanitize_text_field($host);
+            if ($sanitized !== null) {
+                $validated[] = $sanitized;
             }
         }
 
@@ -104,13 +84,41 @@ class Helper
         return implode("\n", $validated);
     }
 
-    private static function validateListField(string $inputValue): bool
+    private static function normalizeListLine(string $line): ?string
     {
-        if (strpbrk($inputValue, implode('', SELF::INVALID_CHARS_OF_LIST_FIELD)) !== false) {
-            return false;
+        $line = trim($line);
+
+        $line = preg_replace('/[\x00-\x1F\x7F\x{200B}-\x{200F}]+/u', '', $line);
+
+        $line = str_replace(self::INVALID_CHARS_OF_LIST_FIELD, '', $line);
+
+        $line = preg_replace('/\s+/', '', $line);
+
+        return $line !== '' ? $line : null;
+    }
+
+    private static function sanitizeEmailOrDomain(string $line): ?string
+    {
+        if (strpos($line, '@') !== false) {
+            $email = sanitize_email($line);
+            return ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) ? $email : null;
         }
 
-        return true;
+        $host = preg_replace('#^https?://#i', '', $line);
+        $host = preg_replace('#/.*$#', '', $host);
+        $host = ltrim($host, '@');
+        $host = strtolower($host);
+
+        if (Helper::isValidDomainName($host)) {
+            return sanitize_text_field($host);
+        }
+
+        return null;
+    }
+
+    private static function validateListField(string $inputValue): bool
+    {
+        return strpbrk($inputValue, implode('', self::INVALID_CHARS_OF_LIST_FIELD)) === false;
     }
 
     public static function isValidDomainName($domainName)
