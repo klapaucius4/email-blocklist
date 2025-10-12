@@ -77,7 +77,7 @@ class EmailBlocklist
         }
 
         if (! get_option('eb_blocked_email_notice_text')) {
-            update_option('eb_blocked_email_notice_text', '', false);
+            update_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text'), false);
         }
     }
 
