@@ -41,7 +41,7 @@ class EmailBlocklist
         add_action('admin_enqueue_scripts', [$this, 'loadAdminStyle']);
 
         add_filter('registration_errors', [$this, 'protectSignupEmail'], 10, 3);
-        // add_action('user_profile_update_errors', [], 10, 3);
+        add_action('user_profile_update_errors', [$this, 'protectAccountUpdate'], 10, 3);
     }
 
     public function pluginActivate(): void
@@ -208,18 +208,28 @@ class EmailBlocklist
             return $errors;
         }
 
-        $email = '';
-
-        if (is_object($userEmail) && isset($userEmail->user_email)) {
-            $email = $userEmail->user_email;
-        } elseif (is_string($userEmail)) {
-            $email = $userEmail;
-        } else {
+        if (! is_string($userEmail)) {
             $errors->add('eb_invalid_email', __('Invalid email address.', 'email-blocklist'));
+        }
+
+        if (Helper::checkIfEmailIsBlocked($userEmail)) {
+            $errors->add('eb_blocked_email', get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text')));
+        }
+
+        return $errors;
+    }
+
+    public function protectAccountUpdate(WP_Error $errors, bool $update, stdClass $user): WP_Error
+    {
+        if (! get_option('eb_protect_signup_submissions')) {
             return $errors;
         }
 
-        if (Helper::checkIfEmailIsBlocked($email)) {
+        if (! is_object($user) || ! isset($user->user_email)) {
+            $errors->add('eb_invalid_email', __('Invalid email address.', 'email-blocklist'));
+        }
+
+        if (Helper::checkIfEmailIsBlocked($user->user_email)) {
             $errors->add('eb_blocked_email', get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text')));
         }
 
