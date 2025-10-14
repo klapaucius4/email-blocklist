@@ -81,6 +81,7 @@ use App\Helper;
                     <label for="eb_block_plus_emails">
                         <?php _e('Block "+" emails', 'email-blocklist') ?>
                     </label>
+                    <p class="label-desc"><?php _e('Block all emails containing the "+" character, e.g. "johnsmith+test1@gmail.com".', 'email-blocklist'); ?></p>
                 </th>
                 <td>
                     <input type="checkbox" id="eb_block_plus_emails" name="eb_block_plus_emails" value="1" <?php checked('1', get_option('eb_block_plus_emails')); ?> />
@@ -91,6 +92,7 @@ use App\Helper;
                     <label for="eb_protect_signup_submissions">
                         <?php _e('Protect signup submissions', 'email-blocklist') ?>
                     </label>
+                    <p class="label-desc"><?php _e('It also protects any email update submissions.', 'email-blocklist'); ?></p>
                 </th>
                 <td>
                     <input type="checkbox" id="eb_protect_signup_submissions" name="eb_protect_signup_submissions" value="1" <?php checked('1', get_option('eb_protect_signup_submissions')); ?> />
