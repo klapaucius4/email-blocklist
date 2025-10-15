@@ -42,6 +42,7 @@ class EmailBlocklist
 
         add_filter('registration_errors', [$this, 'protectSignupEmail'], 10, 3);
         add_action('user_profile_update_errors', [$this, 'protectAccountUpdate'], 10, 3);
+        add_filter('preprocess_comment', [$this, 'protectCommentSubmission'], 10, 1);
     }
 
     public function pluginActivate(): void
@@ -234,5 +235,27 @@ class EmailBlocklist
         }
 
         return $errors;
+    }
+
+    public function protectCommentSubmission(array $commentdata): array
+    {
+        if (! get_option('eb_protect_comment_submissions')) {
+            return $commentdata;
+        }
+
+        $email = isset($commentdata['comment_author_email']) ? $commentdata['comment_author_email'] : '';
+
+        if (empty($email ) || Helper::checkIfEmailIsBlocked($email)) {
+            $errors = new WP_Error();
+            $errors->add('eb_blocked_email', get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text')));
+        }
+
+        if ($errors->has_errors()) {
+            add_filter('pre_comment_approved', function() {
+                return 'spam';
+            });
+        }
+
+        return $commentdata;
     }
 }
