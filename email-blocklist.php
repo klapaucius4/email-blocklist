@@ -264,7 +264,7 @@ class EmailBlocklist
         return $commentdata;
     }
 
-    public function callUpdateGlobalBlocklist()
+    public function callUpdateGlobalBlocklist(): void
     {
         if (! current_user_can('manage_options')) {
             return;
@@ -278,10 +278,17 @@ class EmailBlocklist
             wp_die(__('Missing or invalid nonce.', 'email-blocklist'));
         }
 
-        $this->updateGlobalBlocklist();
+        if (get_transient('eb_global_blocklist_updated')) {
+            add_settings_error('eb_global_blocklist', 'eb_global_blocklist_updated', __('You just updated the global blocklist. Please wait a moment before trying again.', 'email-blocklist'), 'notice');
 
-        wp_safe_redirect(remove_query_arg(['update_global_blocklist', '_wpnonce']));
+            return;
+        }
 
-        exit;
+        if ($this->updateGlobalBlocklist()) {
+            set_transient('eb_global_blocklist_updated', true, 60);
+            add_settings_error('eb_global_blocklist', 'eb_global_blocklist_updated', __('The global blocklist has been updated.', 'email-blocklist'), 'updated');
+        } else {
+            add_settings_error('eb_global_blocklist', 'eb_global_blocklist_updated', __('The global blocklist has not been updated. Please try again later.', 'email-blocklist'), 'error');
+        }
     }
 }
