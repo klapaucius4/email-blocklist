@@ -256,7 +256,7 @@ class EmailBlocklist
         }
 
         if ($errors->has_errors()) {
-            add_filter('pre_comment_approved', function() {
+            add_filter('pre_comment_approved', function () {
                 return 'spam';
             });
         }
