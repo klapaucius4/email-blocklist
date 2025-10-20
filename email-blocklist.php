@@ -90,6 +90,7 @@ class EmailBlocklist
         delete_option('eb_global_blocklist_enabled');
         delete_option('eb_global_blocklist');
         delete_option('eb_global_blocklist_version');
+        delete_option('eb_global_blocklist_update_timestamp');
         delete_option('eb_block_plus_emails');
         delete_option('eb_protect_signup_submissions');
         delete_option('eb_protect_comment_submissions');
@@ -128,6 +129,7 @@ class EmailBlocklist
 
         update_option('eb_global_blocklist', $decodedBlocklistBody);
         update_option('eb_global_blocklist_version', $decodedBlockMetalistBody->blocklist_version);
+        update_option('eb_global_blocklist_update_timestamp', time());
 
         return true;
     }
