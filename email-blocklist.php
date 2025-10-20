@@ -43,6 +43,9 @@ class EmailBlocklist
         add_filter('registration_errors', [$this, 'protectSignupEmail'], 10, 3);
         add_action('user_profile_update_errors', [$this, 'protectAccountUpdate'], 10, 3);
         add_filter('preprocess_comment', [$this, 'protectCommentSubmission'], 10, 1);
+
+
+        add_action('load-settings_page_email-blocklist-settings', [$this, 'callUpdateGlobalBlocklist']);
     }
 
     public function pluginActivate(): void
@@ -259,5 +262,26 @@ class EmailBlocklist
         }
 
         return $commentdata;
+    }
+
+    public function callUpdateGlobalBlocklist()
+    {
+        if (! current_user_can('manage_options')) {
+            return;
+        }
+
+        if (empty($_GET['update_global_blocklist']) || '1' !== (string) $_GET['update_global_blocklist']) {
+            return;
+        }
+
+        if (empty($_GET['_wpnonce']) || ! wp_verify_nonce(wp_unslash($_GET['_wpnonce']), 'eb_update_global_blocklist')) {
+            wp_die(__('Missing or invalid nonce.', 'email-blocklist'));
+        }
+
+        $this->updateGlobalBlocklist();
+
+        wp_safe_redirect(remove_query_arg(['update_global_blocklist', '_wpnonce']));
+
+        exit;
     }
 }

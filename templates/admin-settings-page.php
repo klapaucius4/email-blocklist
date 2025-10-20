@@ -70,7 +70,8 @@ use App\Helper;
                     </label>
                     <p class="label-desc"><?php _e('Count', 'email-blocklist'); ?>: <?php echo Helper::getGlobalBlocklistCount(); ?></p>
                     <p class="label-desc"><?php _e('Blocklist version', 'email-blocklist'); ?>: <?php echo get_option('eb_global_blocklist_version', '-'); ?></p>
-                    <p class="label-desc"><?php _e('Update date', 'email-blocklist'); ?>: <?php echo date('Y-m-d H:i:s', get_option('eb_global_blocklist_update_timestamp', 0)) ?></p>
+                    <p class="label-desc"><?php _e('Updated', 'email-blocklist'); ?>: <?php echo date('Y-m-d H:i:s', get_option('eb_global_blocklist_update_timestamp', 0)) ?></p>
+                    <p><a href="<?php echo Helper::getUpdateGlobalBlocklistUrl(); ?>" class="button"><?php _e('Update global blocklist', 'email-blocklist'); ?></a></p>
                 </th>
                 <td>
                     <textarea rows="8" class="regular-text" id="eb_global_blocklist" name="eb_global_blocklist" disabled><?php echo Helper::getGlobalBlocklist(true); ?></textarea>

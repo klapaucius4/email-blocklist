@@ -192,4 +192,11 @@ class Helper
         global $pagenow;
         return $pagenow === 'wp-login.php';
     }
+
+    public static function getUpdateGlobalBlocklistUrl(): string
+    {
+        $url = add_query_arg(['page' => 'email-blocklist-settings', 'update_global_blocklist' => 1], admin_url('options-general.php'));
+
+        return wp_nonce_url($url, 'eb_update_global_blocklist');
+    }
 }
