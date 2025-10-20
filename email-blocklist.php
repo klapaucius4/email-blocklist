@@ -270,11 +270,11 @@ class EmailBlocklist
             return;
         }
 
-        if (empty($_GET['update_global_blocklist']) || '1' !== (string) $_GET['update_global_blocklist']) {
+        if (empty($_GET['update_global_blocklist']) || 1 !== absint($_GET['update_global_blocklist'])) {
             return;
         }
 
-        if (empty($_GET['_wpnonce']) || ! wp_verify_nonce(wp_unslash($_GET['_wpnonce']), 'eb_update_global_blocklist')) {
+        if (empty($_GET['_wpnonce']) || ! wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'eb_update_global_blocklist')) {
             wp_die(__('Missing or invalid nonce.', 'email-blocklist'));
         }
 
