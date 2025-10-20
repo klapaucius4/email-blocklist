@@ -68,7 +68,7 @@ use App\Helper;
                     <label for="eb_global_blocklist">
                         <?php _e('Global blocklist', 'email-blocklist') ?>
                     </label>
-                    <p class="label-desc"><?php _e('Count', 'email-blocklist'); ?>: <?php echo Helper::getGlobalBlocklistCount(); ?></p>
+                    <p class="label-desc"><?php _e('Number of domains', 'email-blocklist'); ?>: <?php echo Helper::getGlobalBlocklistCount(); ?></p>
                     <p class="label-desc"><?php _e('Blocklist version', 'email-blocklist'); ?>: <?php echo get_option('eb_global_blocklist_version', '-'); ?></p>
                     <p class="label-desc"><?php _e('Updated', 'email-blocklist'); ?>: <?php echo date('Y-m-d H:i:s', get_option('eb_global_blocklist_update_timestamp', 0)) ?></p>
                     <p><a href="<?php echo Helper::getUpdateGlobalBlocklistUrl(); ?>" class="button"><?php _e('Update global blocklist', 'email-blocklist'); ?></a></p>
