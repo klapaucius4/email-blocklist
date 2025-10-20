@@ -248,10 +248,10 @@ class EmailBlocklist
             return $commentdata;
         }
 
+        $errors = new WP_Error();
         $email = isset($commentdata['comment_author_email']) ? $commentdata['comment_author_email'] : '';
 
         if (empty($email) || Helper::checkIfEmailIsBlocked($email)) {
-            $errors = new WP_Error();
             $errors->add('eb_blocked_email', get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text')));
         }
 
