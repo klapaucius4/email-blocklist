@@ -164,14 +164,14 @@ class EmailBlocklist
     {
         register_setting('email-blocklist-settings-group', 'eb_enabled');
         register_setting('email-blocklist-settings-group', 'eb_local_blocklist', [
-            'sanitize_callback' => function($value) {
+            'sanitize_callback' => function ($value) {
                 return Helper::sanitizeListField($value, 'eb_local_blocklist');
             },
             'type' => 'string',
             'default' => '',
         ]);
         register_setting('email-blocklist-settings-group', 'eb_local_allowlist', [
-            'sanitize_callback' => function($value) {
+            'sanitize_callback' => function ($value) {
                 return Helper::sanitizeListField($value, 'eb_local_allowlist');
             },
             'type' => 'string',
@@ -210,7 +210,7 @@ class EmailBlocklist
         wp_enqueue_style('eb_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.0.0');
     }
 
-    public function protectSignupEmail(WP_Error $errors, string $sanitizedUserLogin,  string $userEmail): WP_Error
+    public function protectSignupEmail(WP_Error $errors, string $sanitizedUserLogin, string $userEmail): WP_Error
     {
         if (! get_option('eb_protect_signup_submissions')) {
             return $errors;
