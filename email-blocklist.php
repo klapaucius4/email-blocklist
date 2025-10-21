@@ -44,8 +44,8 @@ class EmailBlocklist
         add_action('user_profile_update_errors', [$this, 'protectAccountUpdate'], 10, 3);
         add_filter('preprocess_comment', [$this, 'protectCommentSubmission'], 10, 1);
 
-
         add_action('load-settings_page_email-blocklist-settings', [$this, 'callUpdateGlobalBlocklist']);
+        add_action('admin_notices', [$this, 'displayAdminNotices']);
     }
 
     public function pluginActivate(): void
@@ -279,16 +279,43 @@ class EmailBlocklist
         }
 
         if (get_transient('eb_global_blocklist_updated')) {
-            add_settings_error('eb_global_blocklist', 'eb_global_blocklist_updated', __('You just updated the global blocklist. Please wait a moment before trying again.', 'email-blocklist'), 'notice');
-
-            return;
+            set_transient('eb_admin_notice', [
+                'setting' => 'eb_global_blocklist',
+                'code' => 'eb_global_blocklist_updated',
+                'message' => __('You just updated the global blocklist. Please wait a moment before trying again.', 'email-blocklist'),
+                'type' => 'notice',
+            ], 30);
+            wp_safe_redirect(remove_query_arg(['update_global_blocklist', '_wpnonce']));
+            exit;
         }
 
         if ($this->updateGlobalBlocklist()) {
             set_transient('eb_global_blocklist_updated', true, 60);
-            add_settings_error('eb_global_blocklist', 'eb_global_blocklist_updated', __('The global blocklist has been updated.', 'email-blocklist'), 'updated');
+            set_transient('eb_admin_notice', [
+                'setting' => 'eb_global_blocklist',
+                'code' => 'eb_global_blocklist_updated',
+                'message' => __('The global blocklist has been updated.', 'email-blocklist'),
+                'type' => 'updated',
+            ], 30);
         } else {
-            add_settings_error('eb_global_blocklist', 'eb_global_blocklist_updated', __('The global blocklist has not been updated. Please try again later.', 'email-blocklist'), 'error');
+            set_transient('eb_admin_notice', [
+                'setting' => 'eb_global_blocklist',
+                'code' => 'eb_global_blocklist_updated',
+                'message' => __('The global blocklist has not been updated. Please try again later.', 'email-blocklist'),
+                'type' => 'error',
+            ], 30);
+        }
+
+        wp_safe_redirect(remove_query_arg(['update_global_blocklist', '_wpnonce']));
+
+        exit;
+    }
+
+    public function displayAdminNotices()
+    {
+        if ($notice = get_transient('eb_admin_notice')) {
+            add_settings_error($notice['setting'], $notice['code'], $notice['message'], $notice['type']);
+            delete_transient('eb_admin_notice');
         }
     }
 }
