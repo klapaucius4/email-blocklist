@@ -313,9 +313,13 @@ class EmailBlocklist
 
     public function displayAdminNotices()
     {
-        if ($notice = get_transient('eb_admin_notice')) {
-            add_settings_error($notice['setting'], $notice['code'], $notice['message'], $notice['type']);
-            delete_transient('eb_admin_notice');
+        $notice = get_transient('eb_admin_notice');
+
+        if (! $notice) {
+            return;
         }
+
+        add_settings_error($notice['setting'], $notice['code'], $notice['message'], $notice['type']);
+        delete_transient('eb_admin_notice');
     }
 }
