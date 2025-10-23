@@ -235,14 +235,28 @@ class EmailBlocklist
 
         if (! is_object($user) || ! isset($user->user_email)) {
             $errors->add('eb_invalid_email', __('Invalid email address.', 'email-blocklist'));
+            return $errors;
         }
 
-        if (Helper::checkIfEmailIsBlocked($user->user_email)) {
-            $errors->add('eb_blocked_email', get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text')));
+        $newEmailMeta = get_user_meta($user->ID, '_new_email', true);
+        $newEmail = $newEmailMeta['newemail'] ?? null;
+
+        if (! $newEmail && ! empty($_REQUEST['email'])) {
+            $newEmail = sanitize_email($_REQUEST['email']);
+        }
+
+        if ($newEmail && $newEmail !== $user->user_email) {
+            if (Helper::checkIfEmailIsBlocked($newEmail)) {
+                $errors->add(
+                    'eb_blocked_email',
+                    get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text'))
+                );
+            }
         }
 
         return $errors;
     }
+
 
     public function protectCommentSubmission(array $commentdata): array
     {
