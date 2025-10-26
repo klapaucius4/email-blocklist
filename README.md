@@ -1,6 +1,6 @@
 # Email Blocklist
 
-**Keep your WordPress site clean by blocking signups and comments from disposable or unwanted email domains. 100% free, no paid APIs.**
+**Keep your WordPress site clean by blocking signups and comments from temporary or disposable email domains. 100% free, no paid APIs.**
 
 ---
 
