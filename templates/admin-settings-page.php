@@ -46,7 +46,7 @@ use App\Helper;
                     <label for="eb_local_allowlist">
                         <?php _e('Local allowlist', 'email-blocklist') ?> (<?php echo Helper::getCounOfLinexOfField('eb_local_allowlist'); ?>)
                     </label>
-                    <p class="label-desc"><?php _e('Enter domain names, one per line, to exclude them from being blocked. You can also enter a full email address - then this specyfic email will be excluded from being blocked.', 'email-blocklist'); ?></p>
+                    <p class="label-desc"><?php _e('Enter domain names, one per line, to exclude them from being blocked (if they are on the global blocklist). You can also enter a full email address - then that specific email will be excluded from being blocked.', 'email-blocklist'); ?></p>
                 </th>
                 <td>
                     <textarea rows="8" class="regular-text" id="eb_local_allowlist" name="eb_local_allowlist" placeholder="<?php echo Helper::getDefaultString('domain_list_placeholder'); ?>"><?php echo esc_textarea(get_option('eb_local_allowlist')); ?></textarea>
