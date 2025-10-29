@@ -91,6 +91,17 @@ use App\Helper;
             </tr>
             <tr>
                 <th scope="row">
+                    <label>
+                        <?php _e('Protect all emails', 'email-blocklist') ?>
+                    </label>
+                </th>
+                <td>
+                    <input type="radio" name="eb_protect_all_emails" id="eb_protect_all_emails_yes" value="1" <?php checked('1', get_option('eb_protect_all_emails')); ?> /><label for="eb_protect_all_emails_yes"><?php _e('Yes', 'email-blocklist'); ?></label>
+                    <input type="radio" name="eb_protect_all_emails" id="eb_protect_all_emails_no" value="0" <?php checked('0', get_option('eb_protect_all_emails')); ?> /><label for="eb_protect_all_emails_no"><?php _e('No', 'email-blocklist'); ?></label>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
                     <label for="eb_protect_signup_submissions">
                         <?php _e('Protect signup submissions', 'email-blocklist') ?>
                     </label>

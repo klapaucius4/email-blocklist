@@ -72,6 +72,10 @@ class EmailBlocklist
             update_option('eb_block_plus_emails', 1, false);
         }
 
+        if (! get_option('eb_protect_all_emails')) {
+            update_option('eb_protect_all_emails', 1, false);
+        }
+
         if (! get_option('eb_protect_signup_submissions')) {
             update_option('eb_protect_signup_submissions', 1, false);
         }
@@ -95,6 +99,7 @@ class EmailBlocklist
         delete_option('eb_global_blocklist_version');
         delete_option('eb_global_blocklist_update_timestamp');
         delete_option('eb_block_plus_emails');
+        delete_option('eb_protect_all_emails');
         delete_option('eb_protect_signup_submissions');
         delete_option('eb_protect_comment_submissions');
         delete_option('eb_blocked_email_notice_text');
