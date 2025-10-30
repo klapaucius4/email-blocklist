@@ -41,6 +41,7 @@ class EmailBlocklist
         add_action('admin_enqueue_scripts', [$this, 'loadAdminStyle']);
 
         add_filter('registration_errors', [$this, 'protectSignupEmail'], 10, 3);
+        add_action('profile_update', [$this, 'protectProfileUpdate'], 10, 2);
         add_action('user_profile_update_errors', [$this, 'protectAccountUpdate'], 10, 3);
         add_filter('preprocess_comment', [$this, 'protectCommentSubmission'], 10, 1);
 
@@ -227,6 +228,21 @@ class EmailBlocklist
         return $errors;
     }
 
+    public function protectProfileUpdate(int $userId, WP_User $oldUserData): void
+    {
+        $oldUserEmail = $oldUserData->data->user_email;
+        $user = get_userdata($userId);
+        $newUserEmail = $user->user_email;
+    
+        if ($newUserEmail !== $oldUserEmail && Helper::checkIfEmailIsBlocked($newUserEmail)) {
+            wp_die(
+                get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text')),
+                __('Error', 'email-blocklist'),
+                ['back_link' => true]
+            );
+        }
+    }
+
     public function protectAccountUpdate(WP_Error $errors, bool $update, stdClass $user): WP_Error
     {
         if (! get_option('eb_protect_signup_submissions')) {
@@ -256,7 +272,6 @@ class EmailBlocklist
 
         return $errors;
     }
-
 
     public function protectCommentSubmission(array $commentdata): array
     {
