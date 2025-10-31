@@ -202,8 +202,12 @@ class EmailBlocklist
         wp_enqueue_style('eb_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.0.0');
     }
 
-    public function isEmailNotBlocked(string|false $isEmail, string $email): bool
+    public function isEmailNotBlocked(string|false $isEmail, string $email): string|false 
     {
+        if (! $isEmail) {
+            return false;
+        }
+    
         if (Helper::checkIfEmailIsBlocked($email)) {
             $this->emailIsBlocked = true;
 
