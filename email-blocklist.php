@@ -76,14 +76,6 @@ class EmailBlocklist
             update_option('eb_block_plus_emails', 1, false);
         }
 
-        if (! get_option('eb_protect_signup_submissions')) {
-            update_option('eb_protect_signup_submissions', 1, false);
-        }
-
-        if (! get_option('eb_protect_comment_submissions')) {
-            update_option('eb_protect_comment_submissions', 1, false);
-        }
-
         if (! get_option('eb_blocked_email_notice_text')) {
             update_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text'), false);
         }
@@ -99,8 +91,6 @@ class EmailBlocklist
         delete_option('eb_global_blocklist_version');
         delete_option('eb_global_blocklist_update_timestamp');
         delete_option('eb_block_plus_emails');
-        delete_option('eb_protect_signup_submissions');
-        delete_option('eb_protect_comment_submissions');
         delete_option('eb_blocked_email_notice_text');
     }
 
@@ -183,8 +173,6 @@ class EmailBlocklist
         ]);
         register_setting('email-blocklist-settings-group', 'eb_global_blocklist_enabled');
         register_setting('email-blocklist-settings-group', 'eb_block_plus_emails');
-        register_setting('email-blocklist-settings-group', 'eb_protect_signup_submissions');
-        register_setting('email-blocklist-settings-group', 'eb_protect_comment_submissions');
         register_setting('email-blocklist-settings-group', 'eb_blocked_email_notice_text', [
             'sanitize_callback' => 'sanitize_text_field',
             'type' => 'string',

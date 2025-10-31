@@ -91,27 +91,6 @@ use App\Helper;
             </tr>
             <tr>
                 <th scope="row">
-                    <label for="eb_protect_signup_submissions">
-                        <?php _e('Protect signup submissions', 'email-blocklist') ?>
-                    </label>
-                    <p class="label-desc"><?php _e('It also protects any email update submissions.', 'email-blocklist'); ?></p>
-                </th>
-                <td>
-                    <input type="checkbox" id="eb_protect_signup_submissions" name="eb_protect_signup_submissions" value="1" <?php checked('1', get_option('eb_protect_signup_submissions')); ?> />
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">
-                    <label for="eb_protect_comment_submissions">
-                        <?php _e('Protect comment submissions', 'email-blocklist') ?>
-                    </label>
-                </th>
-                <td>
-                    <input type="checkbox" id="eb_protect_comment_submissions" name="eb_protect_comment_submissions" value="1" <?php checked('1', get_option('eb_protect_comment_submissions')); ?> />
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">
                     <label for="eb_blocked_email_notice_text">
                         <?php _e('Email blocked notice', 'email-blocklist') ?>
                     </label>
