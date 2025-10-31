@@ -30,6 +30,8 @@ class EmailBlocklist
     const BLOCKLIST_RESOURCE_URL = 'https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist.json';
     const BLOCKLIST_META_RESOURCE_URL = 'https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist-meta.json';
 
+    private bool $emailIsBlocked = false;
+
     public function __construct()
     {
         register_activation_hook(__FILE__, [$this, 'pluginActivate']);
@@ -40,10 +42,11 @@ class EmailBlocklist
         add_filter('plugin_action_links', [$this, 'addPluginActionLinks'], 10, 5);
         add_action('admin_enqueue_scripts', [$this, 'loadAdminStyle']);
 
-        add_filter('registration_errors', [$this, 'protectSignupEmail'], 10, 3);
-        add_action('profile_update', [$this, 'protectProfileUpdate'], 10, 2);
-        add_action('user_profile_update_errors', [$this, 'protectAccountUpdate'], 10, 3);
-        add_filter('preprocess_comment', [$this, 'protectCommentSubmission'], 10, 1);
+        add_filter('is_email', array( $this, 'isEmailNotBlocked' ), 10, 2);
+
+        add_filter('login_errors', [$this, 'addErrorNotices'], 10, 1);
+        add_filter('registration_errors', [$this, 'addErrorNotices'], 10, 1);
+        add_filter('user_profile_update_errors', [$this, 'addErrorNotices'], 10, 1);
 
         add_action('load-settings_page_email-blocklist-settings', [$this, 'callUpdateGlobalBlocklist']);
         add_action('admin_notices', [$this, 'displayAdminNotices']);
@@ -73,14 +76,6 @@ class EmailBlocklist
             update_option('eb_block_plus_emails', 1, false);
         }
 
-        if (! get_option('eb_protect_signup_submissions')) {
-            update_option('eb_protect_signup_submissions', 1, false);
-        }
-
-        if (! get_option('eb_protect_comment_submissions')) {
-            update_option('eb_protect_comment_submissions', 1, false);
-        }
-
         if (! get_option('eb_blocked_email_notice_text')) {
             update_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text'), false);
         }
@@ -96,8 +91,6 @@ class EmailBlocklist
         delete_option('eb_global_blocklist_version');
         delete_option('eb_global_blocklist_update_timestamp');
         delete_option('eb_block_plus_emails');
-        delete_option('eb_protect_signup_submissions');
-        delete_option('eb_protect_comment_submissions');
         delete_option('eb_blocked_email_notice_text');
     }
 
@@ -180,8 +173,6 @@ class EmailBlocklist
         ]);
         register_setting('email-blocklist-settings-group', 'eb_global_blocklist_enabled');
         register_setting('email-blocklist-settings-group', 'eb_block_plus_emails');
-        register_setting('email-blocklist-settings-group', 'eb_protect_signup_submissions');
-        register_setting('email-blocklist-settings-group', 'eb_protect_comment_submissions');
         register_setting('email-blocklist-settings-group', 'eb_blocked_email_notice_text', [
             'sanitize_callback' => 'sanitize_text_field',
             'type' => 'string',
@@ -211,88 +202,36 @@ class EmailBlocklist
         wp_enqueue_style('eb_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.0.0');
     }
 
-    public function protectSignupEmail(WP_Error $errors, string $sanitizedUserLogin, string $userEmail): WP_Error
+    public function isEmailNotBlocked(string|false $isEmail, string $email): bool
     {
-        if (! get_option('eb_protect_signup_submissions')) {
-            return $errors;
+        if (Helper::checkIfEmailIsBlocked($email)) {
+            $this->emailIsBlocked = true;
+
+            return false;
         }
 
-        if (! is_string($userEmail)) {
-            $errors->add('eb_invalid_email', __('Invalid email address.', 'email-blocklist'));
-        }
-
-        if (Helper::checkIfEmailIsBlocked($userEmail)) {
-            $errors->add('eb_blocked_email', get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text')));
-        }
-
-        return $errors;
+        return $isEmail;
     }
 
-    public function protectProfileUpdate(int $userId, WP_User $oldUserData): void
+    public function addErrorNotices(WP_Error|string $errors): WP_Error|string
     {
-        $oldUserEmail = $oldUserData->data->user_email;
-        $user = get_userdata($userId);
-        $newUserEmail = $user->user_email;
-    
-        if ($newUserEmail !== $oldUserEmail && Helper::checkIfEmailIsBlocked($newUserEmail)) {
-            wp_die(
-                get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text')),
-                __('Error', 'email-blocklist'),
-                ['back_link' => true]
-            );
-        }
-    }
+        if ($this->emailIsBlocked) {
 
-    public function protectAccountUpdate(WP_Error $errors, bool $update, stdClass $user): WP_Error
-    {
-        if (! get_option('eb_protect_signup_submissions')) {
-            return $errors;
-        }
+            $errorMessage = get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text'));
 
-        if (! is_object($user) || ! isset($user->user_email)) {
-            $errors->add('eb_invalid_email', __('Invalid email address.', 'email-blocklist'));
-            return $errors;
-        }
-
-        $newEmailMeta = get_user_meta($user->ID, '_new_email', true);
-        $newEmail = $newEmailMeta['newemail'] ?? null;
-
-        if (! $newEmail && ! empty($_REQUEST['email'])) {
-            $newEmail = sanitize_email($_REQUEST['email']);
-        }
-
-        if ($newEmail && $newEmail !== $user->user_email) {
-            if (Helper::checkIfEmailIsBlocked($newEmail)) {
+            if ($errors instanceof WP_Error) {
                 $errors->add(
                     'eb_blocked_email',
-                    get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text'))
+                    $errorMessage
                 );
+            } elseif (is_string($errors)) {
+                $errors .= '<br>' . $errorMessage;
             }
+
+            $this->emailIsBlocked = false;
         }
 
         return $errors;
-    }
-
-    public function protectCommentSubmission(array $commentdata): array
-    {
-        if (! get_option('eb_protect_comment_submissions')) {
-            return $commentdata;
-        }
-
-        $errors = new WP_Error();
-        $email = isset($commentdata['comment_author_email']) ? $commentdata['comment_author_email'] : '';
-
-        if (empty($email) || Helper::checkIfEmailIsBlocked($email)) {
-            $errors->add('eb_blocked_email', get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text')));
-        }
-
-        if ($errors->has_errors()) {
-            add_filter('pre_comment_approved', function () {
-                return 'spam';
-            });
-        }
-
-        return $commentdata;
     }
 
     public function callUpdateGlobalBlocklist(): void

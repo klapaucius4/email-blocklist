@@ -130,10 +130,6 @@ class Helper
     {
         $email = strtolower(trim($email));
 
-        if (! is_email($email)) {
-            return false;
-        }
-
         $domain = substr(strrchr($email, "@"), 1);
 
         $localBlocklist = get_option('eb_local_blocklist', '');
