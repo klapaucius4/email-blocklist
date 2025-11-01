@@ -130,7 +130,11 @@ class Helper
     {
         $email = strtolower(trim($email));
 
-        $domain = substr(strrchr($email, "@"), 1);
+        [$local, $domain] = explode('@', $email, 2);
+
+        if (get_option('eb_block_plus_emails') && strpos($local, '+') !== false) {
+            return true;
+        }
 
         $localBlocklist = get_option('eb_local_blocklist', '');
         $localAllowlist = get_option('eb_local_allowlist', '');
@@ -138,11 +142,11 @@ class Helper
         $localBlocklistArray = array_map('strtolower', array_filter(array_map('trim', explode("\n", $localBlocklist))));
         $localAllowlistArray = array_map('strtolower', array_filter(array_map('trim', explode("\n", $localAllowlist))));
 
-        if (in_array($email, $localAllowlistArray, true) || in_array($domain, $localAllowlistArray, true)) {
+        if (in_array($domain, $localAllowlistArray, true) || in_array($email, $localAllowlistArray, true)) {
             return false;
         }
 
-        if (in_array($email, $localBlocklistArray, true) || in_array($domain, $localBlocklistArray, true)) {
+        if (in_array($domain, $localBlocklistArray, true) || in_array($email, $localBlocklistArray, true)) {
             return true;
         }
 
@@ -150,17 +154,8 @@ class Helper
             $globalBlocklist = get_option('eb_global_blocklist', []);
             $globalBlocklist = array_map('strtolower', array_filter(array_map('trim', $globalBlocklist)));
 
-            if (in_array($email, $globalBlocklist, true) || in_array($domain, $globalBlocklist, true)) {
+            if (in_array($domain, $globalBlocklist, true) || in_array($email, $globalBlocklist, true)) {
                 return true;
-            }
-        }
-
-        if (get_option('eb_block_plus_emails')) {
-            if (substr($email, 0, strpos($email, '@')) !== false) {
-                $plusEmail = substr($email, 0, strpos($email, '@')) . '+' . substr($email, strpos($email, '@'));
-                if (in_array($plusEmail, $localBlocklistArray, true) || in_array($plusEmail, $globalBlocklist ?? [], true)) {
-                    return true;
-                }
             }
         }
 
