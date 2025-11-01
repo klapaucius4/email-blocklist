@@ -202,10 +202,14 @@ class EmailBlocklist
         wp_enqueue_style('eb_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.0.0');
     }
 
-    public function isEmailNotBlocked(string|false $isEmail, string $email): string|false 
+    public function isEmailNotBlocked(string|false $isEmail, string $email): string|false
     {
         if (! $isEmail) {
             return false;
+        }
+
+        if (! get_option('eb_enabled')) {
+            return $isEmail;
         }
     
         if (Helper::checkIfEmailIsBlocked($email)) {
@@ -219,6 +223,10 @@ class EmailBlocklist
 
     public function addErrorNotices(WP_Error|string $errors): WP_Error|string
     {
+        if (! get_option('eb_enabled')) {
+            return $errors;
+        }
+
         if ($this->emailIsBlocked) {
 
             $errorMessage = get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text'));
