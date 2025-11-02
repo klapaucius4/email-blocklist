@@ -21,7 +21,7 @@ if (! defined('ABSPATH')) {
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use App\Helper;
+use EmailBlocklist\Helper;
 
 $emailBlocklist = new EmailBlocklist();
 
