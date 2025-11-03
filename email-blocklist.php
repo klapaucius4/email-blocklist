@@ -6,7 +6,7 @@
  * Description:       Keep your WordPress site clean by blocking unwanted signups and comments with a blocklist of spam and temporary email domains.
  * Version:           1.0.0
  * Requires at least: 5.2
- * Requires PHP:      8.0
+ * Requires PHP:      7.4
  * Author:            Michał Kowalik
  * Author URI:        https://michalkowalik.pl
  * License:           GPL v2 or later
@@ -202,7 +202,11 @@ class EmailBlocklist
         wp_enqueue_style('eb_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.0.0');
     }
 
-    public function isEmailNotBlocked(string|false $isEmail, string $email): string|false
+    /**
+     * @param string|false $isEmail
+     * @return string|false
+     */
+    public function isEmailNotBlocked($isEmail, string $email)
     {
         if (! $isEmail) {
             return false;
@@ -221,7 +225,11 @@ class EmailBlocklist
         return $isEmail;
     }
 
-    public function addErrorNotices(WP_Error|string $errors): WP_Error|string
+    /**
+     * @param WP_Error|string $errors
+     * @return WP_Error|string
+     */
+    public function addErrorNotices($errors)
     {
         if (! get_option('eb_enabled')) {
             return $errors;
