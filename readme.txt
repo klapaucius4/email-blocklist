@@ -2,7 +2,7 @@
 Contributors: klapaucius4
 Tags: email blocklist, disposable emails, temporary emails, validate email, spam prevention, user registration, wordpress security, fake accounts, block domains, antispam
 Requires at least: 5.8
-Tested up to: 6.8.3
+Tested up to: 6.8
 Stable tag: 1.0.0
 License: GPLv2 or later
 
