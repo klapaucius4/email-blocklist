@@ -30,8 +30,7 @@ Unlike many similar plugins, **Email Blocklist is completely free and does not r
 1. Download and install the plugin from the WordPress Plugin Directory.
 2. Activate the plugin through the **Plugins** menu in WordPress.
 3. Go to **Settings → Email Blocklist** to configure your blocklist.
-4. Add domains you want to block (e.g., `mailinator.com`, `10minutemail.com`).
-5. Save your changes – unwanted signups and comments will now be blocked automatically.
+4. Save your changes – unwanted signups and comments will now be blocked automatically.
 
 ---
 
