@@ -36,7 +36,7 @@ class EmailBlocklist
     {
         register_activation_hook(__FILE__, [$this, 'pluginActivate']);
         register_uninstall_hook(__FILE__, ['EmailBlocklist', 'pluginUninstall']);
-        add_action('plugins_loaded', [$this, 'loadTextdomain']);
+        
         add_action('admin_menu', [$this, 'addSettingsPageToMenu']);
         add_action('admin_init', [$this, 'registerSettings']);
         add_filter('plugin_action_links', [$this, 'addPluginActionLinks'], 10, 5);
@@ -131,11 +131,6 @@ class EmailBlocklist
         update_option('eb_global_blocklist_update_timestamp', time());
 
         return true;
-    }
-
-    public function loadTextdomain(): void
-    {
-        load_plugin_textdomain('email-blocklist');
     }
 
     public function addSettingsPageToMenu(): void
