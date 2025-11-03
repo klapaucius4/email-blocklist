@@ -151,7 +151,11 @@ class EmailBlocklist
 
     public function registerSettings()
     {
-        register_setting('email-blocklist-settings-group', 'eb_enabled');
+        register_setting('email-blocklist-settings-group', 'eb_enabled', [
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'type' => 'boolean',
+            'default' => 1,
+        ]);
         register_setting('email-blocklist-settings-group', 'eb_local_blocklist', [
             'sanitize_callback' => function ($value) {
                 return Helper::sanitizeListField($value, 'eb_local_blocklist');
@@ -166,8 +170,16 @@ class EmailBlocklist
             'type' => 'string',
             'default' => '',
         ]);
-        register_setting('email-blocklist-settings-group', 'eb_global_blocklist_enabled');
-        register_setting('email-blocklist-settings-group', 'eb_block_plus_emails');
+        register_setting('email-blocklist-settings-group', 'eb_global_blocklist_enabled', [
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'type' => 'boolean',
+            'default' => 1,
+        ]);
+        register_setting('email-blocklist-settings-group', 'eb_block_plus_emails', [
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'type' => 'boolean',
+            'default' => 1,
+        ]);
         register_setting('email-blocklist-settings-group', 'eb_blocked_email_notice_text', [
             'sanitize_callback' => 'sanitize_text_field',
             'type' => 'string',
