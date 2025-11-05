@@ -36,7 +36,7 @@ class EmailBlocklist
     {
         register_activation_hook(__FILE__, [$this, 'pluginActivate']);
         register_uninstall_hook(__FILE__, ['EmailBlocklist', 'pluginUninstall']);
-        
+
         add_action('admin_menu', [$this, 'addSettingsPageToMenu']);
         add_action('admin_init', [$this, 'registerSettings']);
         add_filter('plugin_action_links', [$this, 'addPluginActionLinks'], 10, 5);
@@ -222,7 +222,7 @@ class EmailBlocklist
         if (! get_option('eb_enabled')) {
             return $isEmail;
         }
-    
+
         if (Helper::checkIfEmailIsBlocked($email)) {
             $this->emailIsBlocked = true;
 
