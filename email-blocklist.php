@@ -108,7 +108,7 @@ class EmailBlocklist
         $decodedBlockMetalistBody = json_decode(wp_remote_retrieve_body($blocklistMetaResponse));
 
         if (! empty($globalBlocklist) && $globalBlocklistVersion >= $decodedBlockMetalistBody->blocklist_version) {
-            update_option('eb_global_blocklist_update_timestamp', time());
+            update_option('eb_global_blocklist_update_timestamp', current_time('timestamp'));
 
             return true;
         }
@@ -128,7 +128,7 @@ class EmailBlocklist
 
         update_option('eb_global_blocklist', $decodedBlocklistBody);
         update_option('eb_global_blocklist_version', $decodedBlockMetalistBody->blocklist_version);
-        update_option('eb_global_blocklist_update_timestamp', time());
+        update_option('eb_global_blocklist_update_timestamp', current_time('timestamp'));
 
         return true;
     }
