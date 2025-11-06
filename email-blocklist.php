@@ -282,7 +282,9 @@ class EmailBlocklist
                 'message' => __('You just updated the global blocklist. Please wait a moment before trying again.', 'email-blocklist'),
                 'type' => 'notice',
             ], 30);
+
             wp_safe_redirect(remove_query_arg(['update_global_blocklist', '_wpnonce']));
+
             exit;
         }
 
