@@ -310,7 +310,7 @@ class EmailBlocklist
         exit;
     }
 
-    public function displayAdminNotices()
+    public function displayAdminNotices(): void
     {
         $notice = get_transient('eb_admin_notice');
 
