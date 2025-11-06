@@ -50,6 +50,10 @@ class EmailBlocklist
 
         add_action('load-settings_page_email-blocklist-settings', [$this, 'callUpdateGlobalBlocklist']);
         add_action('admin_notices', [$this, 'displayAdminNotices']);
+
+        add_action('wp', [$this, 'updateGlobalBlocklistCronInit']);
+        add_action('update_global_blocklist_cron_hook', [$this, 'updateGlobalBlocklistCronTask']);
+
     }
 
     public function pluginActivate(): void
@@ -320,5 +324,19 @@ class EmailBlocklist
 
         add_settings_error($notice['setting'], $notice['code'], $notice['message'], $notice['type']);
         delete_transient('eb_admin_notice');
+    }
+
+    public function updateGlobalBlocklistCronInit(): void
+    {
+        if ( ! wp_next_scheduled('update_global_blocklist_cron_hook') ) {
+            $midnight = strtotime('tomorrow midnight');
+
+            wp_schedule_event($midnight, 'daily', 'update_global_blocklist_cron_hook');
+        }
+    }
+
+    public function updateGlobalBlocklistCronTask(): void
+    {
+        $this->callUpdateGlobalBlocklist();
     }
 }
