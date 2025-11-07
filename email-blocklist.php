@@ -328,11 +328,17 @@ class EmailBlocklist
 
     public function updateGlobalBlocklistCronInit(): void
     {
-        if (! wp_next_scheduled('update_global_blocklist_cron_hook')) {
-            $midnight = strtotime('tomorrow midnight');
-
-            wp_schedule_event($midnight, 'daily', 'update_global_blocklist_cron_hook');
+        if (! get_option('eb_global_blocklist_enabled')) {
+            return;
         }
+
+        if (wp_next_scheduled('update_global_blocklist_cron_hook')) {
+            return;
+        }
+
+        $midnight = strtotime('tomorrow midnight');
+
+        wp_schedule_event($midnight, 'daily', 'update_global_blocklist_cron_hook');
     }
 
     public function updateGlobalBlocklistCronTask(): void
