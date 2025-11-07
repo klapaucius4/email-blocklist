@@ -43,6 +43,7 @@ Yes, Email Blocklist integrates seamlessly with WordPress core registration and 
 == Changelog ==
 = [next_version] =
 * Change the 'global blocklist update time setting' from universal to local
+* Implement automatic global blocklist updates via CRON (daily)
 
 = 1.0.0 =
 First version
