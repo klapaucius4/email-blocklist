@@ -337,6 +337,6 @@ class EmailBlocklist
 
     public function updateGlobalBlocklistCronTask(): void
     {
-        $this->callUpdateGlobalBlocklist();
+        $this->updateGlobalBlocklist();
     }
 }
