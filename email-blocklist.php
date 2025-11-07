@@ -50,6 +50,10 @@ class EmailBlocklist
 
         add_action('load-settings_page_email-blocklist-settings', [$this, 'callUpdateGlobalBlocklist']);
         add_action('admin_notices', [$this, 'displayAdminNotices']);
+
+        add_action('wp', [$this, 'updateGlobalBlocklistCronInit']);
+        add_action('update_global_blocklist_cron_hook', [$this, 'updateGlobalBlocklistCronTask']);
+
     }
 
     public function pluginActivate(): void
@@ -282,7 +286,9 @@ class EmailBlocklist
                 'message' => __('You just updated the global blocklist. Please wait a moment before trying again.', 'email-blocklist'),
                 'type' => 'notice',
             ], 30);
+
             wp_safe_redirect(remove_query_arg(['update_global_blocklist', '_wpnonce']));
+
             exit;
         }
 
@@ -308,7 +314,7 @@ class EmailBlocklist
         exit;
     }
 
-    public function displayAdminNotices()
+    public function displayAdminNotices(): void
     {
         $notice = get_transient('eb_admin_notice');
 
@@ -318,5 +324,25 @@ class EmailBlocklist
 
         add_settings_error($notice['setting'], $notice['code'], $notice['message'], $notice['type']);
         delete_transient('eb_admin_notice');
+    }
+
+    public function updateGlobalBlocklistCronInit(): void
+    {
+        if (! get_option('eb_global_blocklist_enabled')) {
+            return;
+        }
+
+        if (wp_next_scheduled('update_global_blocklist_cron_hook')) {
+            return;
+        }
+
+        $midnight = strtotime('tomorrow midnight');
+
+        wp_schedule_event($midnight, 'daily', 'update_global_blocklist_cron_hook');
+    }
+
+    public function updateGlobalBlocklistCronTask(): void
+    {
+        $this->updateGlobalBlocklist();
     }
 }
