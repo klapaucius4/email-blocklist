@@ -104,14 +104,21 @@ class EmailBlocklist
 
         if (is_wp_error($blocklistMetaResponse)) {
             Helper::logError($blocklistMetaResponse->get_error_message());
+
             return false;
         }
 
         $globalBlocklist = get_option('eb_global_blocklist', []);
         $globalBlocklistVersion = get_option('eb_global_blocklist_version', 0);
-        $decodedBlockMetalistBody = json_decode(wp_remote_retrieve_body($blocklistMetaResponse));
+        $decodedBlocklistMetaBody = json_decode(wp_remote_retrieve_body($blocklistMetaResponse));
 
-        if (! empty($globalBlocklist) && $globalBlocklistVersion >= $decodedBlockMetalistBody->blocklist_version) {
+        if (! isset($decodedBlocklistMetaBody->blocklist_version)) {
+            Helper::logError(__('The global blocklist version cannot be read.', 'email-blocklist'));
+            
+            return false;
+        }
+
+        if (! empty($globalBlocklist) && $globalBlocklistVersion >= $decodedBlocklistMetaBody->blocklist_version) {
             update_option('eb_global_blocklist_update_timestamp', current_time('timestamp'));
 
             return true;
@@ -121,17 +128,20 @@ class EmailBlocklist
 
         if (is_wp_error($blocklistResponse)) {
             Helper::logError($blocklistResponse->get_error_message());
+
             return false;
         }
 
         $decodedBlocklistBody = json_decode(wp_remote_retrieve_body($blocklistResponse));
 
-        if (! is_array($decodedBlocklistBody)) {
+        if (! is_array($decodedBlocklistBody) || empty($decodedBlocklistBody)) {
+            Helper::logError(__('The global blocklist content cannot be read.', 'email-blocklist'));
+
             return false;
         }
 
         update_option('eb_global_blocklist', $decodedBlocklistBody);
-        update_option('eb_global_blocklist_version', $decodedBlockMetalistBody->blocklist_version);
+        update_option('eb_global_blocklist_version', $decodedBlocklistMetaBody->blocklist_version);
         update_option('eb_global_blocklist_update_timestamp', current_time('timestamp'));
 
         return true;
