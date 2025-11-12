@@ -50,6 +50,10 @@ class EmailBlocklist
 
         add_action('load-settings_page_email-blocklist-settings', [$this, 'callUpdateGlobalBlocklist']);
         add_action('admin_notices', [$this, 'displayAdminNotices']);
+
+        add_action('wp', [$this, 'updateGlobalBlocklistCronInit']);
+        add_action('update_global_blocklist_cron_hook', [$this, 'updateGlobalBlocklistCronTask']);
+
     }
 
     public function pluginActivate(): void
@@ -100,15 +104,22 @@ class EmailBlocklist
 
         if (is_wp_error($blocklistMetaResponse)) {
             Helper::logError($blocklistMetaResponse->get_error_message());
+
             return false;
         }
 
         $globalBlocklist = get_option('eb_global_blocklist', []);
         $globalBlocklistVersion = get_option('eb_global_blocklist_version', 0);
-        $decodedBlockMetalistBody = json_decode(wp_remote_retrieve_body($blocklistMetaResponse));
+        $decodedBlocklistMetaBody = json_decode(wp_remote_retrieve_body($blocklistMetaResponse));
 
-        if (! empty($globalBlocklist) && $globalBlocklistVersion >= $decodedBlockMetalistBody->blocklist_version) {
-            update_option('eb_global_blocklist_update_timestamp', time());
+        if (! isset($decodedBlocklistMetaBody->blocklist_version)) {
+            Helper::logError(__('The global blocklist version cannot be read.', 'email-blocklist'));
+            
+            return false;
+        }
+
+        if (! empty($globalBlocklist) && $globalBlocklistVersion >= $decodedBlocklistMetaBody->blocklist_version) {
+            update_option('eb_global_blocklist_update_timestamp', current_time('timestamp'));
 
             return true;
         }
@@ -117,18 +128,21 @@ class EmailBlocklist
 
         if (is_wp_error($blocklistResponse)) {
             Helper::logError($blocklistResponse->get_error_message());
+
             return false;
         }
 
         $decodedBlocklistBody = json_decode(wp_remote_retrieve_body($blocklistResponse));
 
-        if (! is_array($decodedBlocklistBody)) {
+        if (! is_array($decodedBlocklistBody) || empty($decodedBlocklistBody)) {
+            Helper::logError(__('The global blocklist content cannot be read.', 'email-blocklist'));
+
             return false;
         }
 
         update_option('eb_global_blocklist', $decodedBlocklistBody);
-        update_option('eb_global_blocklist_version', $decodedBlockMetalistBody->blocklist_version);
-        update_option('eb_global_blocklist_update_timestamp', time());
+        update_option('eb_global_blocklist_version', $decodedBlocklistMetaBody->blocklist_version);
+        update_option('eb_global_blocklist_update_timestamp', current_time('timestamp'));
 
         return true;
     }
@@ -282,7 +296,9 @@ class EmailBlocklist
                 'message' => __('You just updated the global blocklist. Please wait a moment before trying again.', 'email-blocklist'),
                 'type' => 'notice',
             ], 30);
+
             wp_safe_redirect(remove_query_arg(['update_global_blocklist', '_wpnonce']));
+
             exit;
         }
 
@@ -308,7 +324,7 @@ class EmailBlocklist
         exit;
     }
 
-    public function displayAdminNotices()
+    public function displayAdminNotices(): void
     {
         $notice = get_transient('eb_admin_notice');
 
@@ -318,5 +334,25 @@ class EmailBlocklist
 
         add_settings_error($notice['setting'], $notice['code'], $notice['message'], $notice['type']);
         delete_transient('eb_admin_notice');
+    }
+
+    public function updateGlobalBlocklistCronInit(): void
+    {
+        if (! get_option('eb_global_blocklist_enabled')) {
+            return;
+        }
+
+        if (wp_next_scheduled('update_global_blocklist_cron_hook')) {
+            return;
+        }
+
+        $midnight = strtotime('tomorrow midnight');
+
+        wp_schedule_event($midnight, 'daily', 'update_global_blocklist_cron_hook');
+    }
+
+    public function updateGlobalBlocklistCronTask(): void
+    {
+        $this->updateGlobalBlocklist();
     }
 }
