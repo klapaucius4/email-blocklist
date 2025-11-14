@@ -37,7 +37,7 @@ use EmailBlocklist\Helper;
                     <p class="label-desc"><?php _e('Enter domain names (one per line) to block them. You can also enter a full email address - in this case, only that specific address will be blocked.', 'email-blocklist'); ?></p>
                 </th>
                 <td>
-                    <textarea rows="8" class="regular-text" id="eb_local_blocklist" name="eb_local_blocklist" placeholder="<?php echo Helper::getDefaultString('domain_list_placeholder'); ?>"><?php echo esc_textarea(get_option('eb_local_blocklist')); ?></textarea>
+                    <textarea rows="8" class="regular-text" id="eb_local_blocklist" name="eb_local_blocklist" placeholder="<?php echo esc_attr(Helper::getDefaultString('domain_list_placeholder')); ?>"><?php echo esc_textarea(get_option('eb_local_blocklist')); ?></textarea>
                     <p class="description"><?php _e('One domain name or email address per line.', 'email-blocklist') ?></p>
                 </td>
             </tr>
@@ -49,7 +49,7 @@ use EmailBlocklist\Helper;
                     <p class="label-desc"><?php _e('Enter domain names, one per line, to exclude them from being blocked (if they are on the global blocklist). You can also enter a full email address - then that specific email will be excluded from being blocked.', 'email-blocklist'); ?></p>
                 </th>
                 <td>
-                    <textarea rows="8" class="regular-text" id="eb_local_allowlist" name="eb_local_allowlist" placeholder="<?php echo Helper::getDefaultString('domain_list_placeholder'); ?>"><?php echo esc_textarea(get_option('eb_local_allowlist')); ?></textarea>
+                    <textarea rows="8" class="regular-text" id="eb_local_allowlist" name="eb_local_allowlist" placeholder="<?php echo esc_attr(Helper::getDefaultString('domain_list_placeholder')); ?>"><?php echo esc_textarea(get_option('eb_local_allowlist')); ?></textarea>
                     <p class="description"><?php _e('One domain name or email address per line.', 'email-blocklist') ?></p>
                 </td>
             </tr>
@@ -71,7 +71,7 @@ use EmailBlocklist\Helper;
                     <p class="label-desc"><?php _e('Number of domains', 'email-blocklist'); ?>: <?php echo Helper::getGlobalBlocklistCount(); ?></p>
                     <p class="label-desc"><?php _e('Blocklist version', 'email-blocklist'); ?>: <?php echo get_option('eb_global_blocklist_version', '-'); ?></p>
                     <p class="label-desc"><?php _e('Updated', 'email-blocklist'); ?>: <?php echo date('Y-m-d H:i:s', get_option('eb_global_blocklist_update_timestamp', 0)) ?></p>
-                    <p class="mb-0"><a href="<?php echo Helper::getUpdateGlobalBlocklistUrl(); ?>" class="button"><?php _e('Update global blocklist', 'email-blocklist'); ?></a></p>
+                    <p class="mb-0"><a href="<?php echo esc_attr(Helper::getUpdateGlobalBlocklistUrl()); ?>" class="button"><?php _e('Update global blocklist', 'email-blocklist'); ?></a></p>
                     <p class="label-desc"><?php _e('(the global blocklist is automatically updated daily by WP-Cron)', 'email-blocklist'); ?></p>
                 </th>
                 <td>
@@ -97,7 +97,7 @@ use EmailBlocklist\Helper;
                     </label>
                 </th>
                 <td>
-                    <input type="text" id="eb_blocked_email_notice_text" class="regular-text" name="eb_blocked_email_notice_text" value="<?php echo get_option('eb_blocked_email_notice_text'); ?>" placeholder="<?php echo Helper::getDefaultString('blocked_email_notice_text'); ?>" />
+                    <input type="text" id="eb_blocked_email_notice_text" class="regular-text" name="eb_blocked_email_notice_text" value="<?php echo esc_attr(get_option('eb_blocked_email_notice_text')); ?>" placeholder="<?php echo esc_attr(Helper::getDefaultString('blocked_email_notice_text')); ?>" />
                 </td>
             </tr>
         </table>
