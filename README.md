@@ -12,6 +12,9 @@ Spam registrations and fake accounts often rely on throwaway email addresses. Wi
 
 Unlike many similar plugins, **Email Blocklist is completely free and does not rely on any paid APIs or third-party services**. Everything runs directly on your WordPress installation. No hidden costs, no subscriptions – just a lightweight solution that does one job and does it well.
 
+The plugin uses a global blocklist stored in two JSON files on its public GitHub repository — one containing the [list of blocked domains](https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist.json) and another holding [basic metadata](https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist-meta.json). The blocklist is downloaded during plugin activation, and a daily WP-Cron task checks for updates. If a newer version is available, the list is refreshed automatically. You can also trigger a manual update from the plugin’s settings page in the WordPress admin panel.
+
+
 ---
 
 ## Features
