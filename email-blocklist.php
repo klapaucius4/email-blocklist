@@ -27,8 +27,8 @@ $emailBlocklist = new EmailBlocklist();
 
 class EmailBlocklist
 {
-    const BLOCKLIST_RESOURCE_URL = 'https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist.json';
-    const BLOCKLIST_META_RESOURCE_URL = 'https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist-meta.json';
+    const EMBL_BLOCKLIST_RESOURCE_URL = 'https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist.json';
+    const EMBL_BLOCKLIST_META_RESOURCE_URL = 'https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist-meta.json';
 
     private bool $emailIsBlocked = false;
 
@@ -58,49 +58,49 @@ class EmailBlocklist
 
     public function pluginActivate(): void
     {
-        if (! get_option('eb_enabled')) {
-            update_option('eb_enabled', 1, false);
+        if (! get_option('embl_enabled')) {
+            update_option('embl_enabled', 1, false);
         }
 
-        if (! get_option('eb_local_blocklist')) {
-            update_option('eb_local_blocklist', '', false);
+        if (! get_option('embl_local_blocklist')) {
+            update_option('embl_local_blocklist', '', false);
         }
 
-        if (! get_option('eb_local_allowlist')) {
-            update_option('eb_local_allowlist', '', false);
+        if (! get_option('embl_local_allowlist')) {
+            update_option('embl_local_allowlist', '', false);
         }
 
-        if (! get_option('eb_global_blocklist_enabled')) {
-            update_option('eb_global_blocklist_enabled', 1, false);
+        if (! get_option('embl_global_blocklist_enabled')) {
+            update_option('embl_global_blocklist_enabled', 1, false);
         }
 
         $this->updateGlobalBlocklist();
 
-        if (! get_option('eb_block_plus_emails')) {
-            update_option('eb_block_plus_emails', 1, false);
+        if (! get_option('embl_block_plus_emails')) {
+            update_option('embl_block_plus_emails', 1, false);
         }
 
-        if (! get_option('eb_blocked_email_notice_text')) {
-            update_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text'), false);
+        if (! get_option('embl_blocked_email_notice_text')) {
+            update_option('embl_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text'), false);
         }
     }
 
     public static function pluginUninstall(): void
     {
-        delete_option('eb_enabled');
-        delete_option('eb_local_blocklist');
-        delete_option('eb_local_allowlist');
-        delete_option('eb_global_blocklist_enabled');
-        delete_option('eb_global_blocklist');
-        delete_option('eb_global_blocklist_version');
-        delete_option('eb_global_blocklist_update_timestamp');
-        delete_option('eb_block_plus_emails');
-        delete_option('eb_blocked_email_notice_text');
+        delete_option('embl_enabled');
+        delete_option('embl_local_blocklist');
+        delete_option('embl_local_allowlist');
+        delete_option('embl_global_blocklist_enabled');
+        delete_option('embl_global_blocklist');
+        delete_option('embl_global_blocklist_version');
+        delete_option('embl_global_blocklist_update_timestamp');
+        delete_option('embl_block_plus_emails');
+        delete_option('embl_blocked_email_notice_text');
     }
 
     private function updateGlobalBlocklist(): bool
     {
-        $blocklistMetaResponse = wp_remote_get(self::BLOCKLIST_META_RESOURCE_URL);
+        $blocklistMetaResponse = wp_remote_get(self::EMBL_BLOCKLIST_META_RESOURCE_URL);
 
         if (is_wp_error($blocklistMetaResponse)) {
             Helper::logError($blocklistMetaResponse->get_error_message());
@@ -108,8 +108,8 @@ class EmailBlocklist
             return false;
         }
 
-        $globalBlocklist = get_option('eb_global_blocklist', []);
-        $globalBlocklistVersion = get_option('eb_global_blocklist_version', 0);
+        $globalBlocklist = get_option('embl_global_blocklist', []);
+        $globalBlocklistVersion = get_option('embl_global_blocklist_version', 0);
         $decodedBlocklistMetaBody = json_decode(wp_remote_retrieve_body($blocklistMetaResponse));
 
         if (! isset($decodedBlocklistMetaBody->blocklist_version)) {
@@ -119,12 +119,12 @@ class EmailBlocklist
         }
 
         if (! empty($globalBlocklist) && $globalBlocklistVersion >= $decodedBlocklistMetaBody->blocklist_version) {
-            update_option('eb_global_blocklist_update_timestamp', current_time('timestamp'));
+            update_option('embl_global_blocklist_update_timestamp', current_time('timestamp'));
 
             return true;
         }
 
-        $blocklistResponse = wp_remote_get(self::BLOCKLIST_RESOURCE_URL);
+        $blocklistResponse = wp_remote_get(self::EMBL_BLOCKLIST_RESOURCE_URL);
 
         if (is_wp_error($blocklistResponse)) {
             Helper::logError($blocklistResponse->get_error_message());
@@ -140,9 +140,9 @@ class EmailBlocklist
             return false;
         }
 
-        update_option('eb_global_blocklist', $decodedBlocklistBody);
-        update_option('eb_global_blocklist_version', $decodedBlocklistMetaBody->blocklist_version);
-        update_option('eb_global_blocklist_update_timestamp', current_time('timestamp'));
+        update_option('embl_global_blocklist', $decodedBlocklistBody);
+        update_option('embl_global_blocklist_version', $decodedBlocklistMetaBody->blocklist_version);
+        update_option('embl_global_blocklist_update_timestamp', current_time('timestamp'));
 
         return true;
     }
@@ -165,36 +165,36 @@ class EmailBlocklist
 
     public function registerSettings()
     {
-        register_setting('email-blocklist-settings-group', 'eb_enabled', [
+        register_setting('email-blocklist-settings-group', 'embl_enabled', [
             'sanitize_callback' => 'rest_sanitize_boolean',
             'type' => 'boolean',
             'default' => 1,
         ]);
-        register_setting('email-blocklist-settings-group', 'eb_local_blocklist', [
+        register_setting('email-blocklist-settings-group', 'embl_local_blocklist', [
             'sanitize_callback' => function ($value) {
-                return Helper::sanitizeListField($value, 'eb_local_blocklist');
+                return Helper::sanitizeListField($value, 'embl_local_blocklist');
             },
             'type' => 'string',
             'default' => '',
         ]);
-        register_setting('email-blocklist-settings-group', 'eb_local_allowlist', [
+        register_setting('email-blocklist-settings-group', 'embl_local_allowlist', [
             'sanitize_callback' => function ($value) {
-                return Helper::sanitizeListField($value, 'eb_local_allowlist');
+                return Helper::sanitizeListField($value, 'embl_local_allowlist');
             },
             'type' => 'string',
             'default' => '',
         ]);
-        register_setting('email-blocklist-settings-group', 'eb_global_blocklist_enabled', [
+        register_setting('email-blocklist-settings-group', 'embl_global_blocklist_enabled', [
             'sanitize_callback' => 'rest_sanitize_boolean',
             'type' => 'boolean',
             'default' => 1,
         ]);
-        register_setting('email-blocklist-settings-group', 'eb_block_plus_emails', [
+        register_setting('email-blocklist-settings-group', 'embl_block_plus_emails', [
             'sanitize_callback' => 'rest_sanitize_boolean',
             'type' => 'boolean',
             'default' => 1,
         ]);
-        register_setting('email-blocklist-settings-group', 'eb_blocked_email_notice_text', [
+        register_setting('email-blocklist-settings-group', 'embl_blocked_email_notice_text', [
             'sanitize_callback' => 'sanitize_text_field',
             'type' => 'string',
             'default' => Helper::getDefaultString('blocked_email_notice_text')
@@ -220,7 +220,7 @@ class EmailBlocklist
 
     public function loadAdminStyle()
     {
-        wp_enqueue_style('eb_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.0.0');
+        wp_enqueue_style('embl_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.0.0');
     }
 
     /**
@@ -233,7 +233,7 @@ class EmailBlocklist
             return false;
         }
 
-        if (! get_option('eb_enabled')) {
+        if (! get_option('embl_enabled')) {
             return $isEmail;
         }
 
@@ -252,17 +252,17 @@ class EmailBlocklist
      */
     public function addErrorNotices($errors)
     {
-        if (! get_option('eb_enabled')) {
+        if (! get_option('embl_enabled')) {
             return $errors;
         }
 
         if ($this->emailIsBlocked) {
 
-            $errorMessage = get_option('eb_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text'));
+            $errorMessage = get_option('embl_blocked_email_notice_text', Helper::getDefaultString('blocked_email_notice_text'));
 
             if ($errors instanceof WP_Error) {
                 $errors->add(
-                    'eb_blocked_email',
+                    'embl_blocked_email',
                     $errorMessage
                 );
             } elseif (is_string($errors)) {
@@ -285,14 +285,14 @@ class EmailBlocklist
             return;
         }
 
-        if (empty($_GET['_wpnonce']) || ! wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'eb_update_global_blocklist')) {
+        if (empty($_GET['_wpnonce']) || ! wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'embl_update_global_blocklist')) {
             wp_die(__('Missing or invalid nonce.', 'email-blocklist'));
         }
 
-        if (get_transient('eb_global_blocklist_updated')) {
-            set_transient('eb_admin_notice', [
-                'setting' => 'eb_global_blocklist',
-                'code' => 'eb_global_blocklist_updated',
+        if (get_transient('embl_global_blocklist_updated')) {
+            set_transient('embl_admin_notice', [
+                'setting' => 'embl_global_blocklist',
+                'code' => 'embl_global_blocklist_updated',
                 'message' => __('You just updated the global blocklist. Please wait a moment before trying again.', 'email-blocklist'),
                 'type' => 'notice',
             ], 30);
@@ -303,17 +303,17 @@ class EmailBlocklist
         }
 
         if ($this->updateGlobalBlocklist()) {
-            set_transient('eb_global_blocklist_updated', true, 60);
-            set_transient('eb_admin_notice', [
-                'setting' => 'eb_global_blocklist',
-                'code' => 'eb_global_blocklist_updated',
+            set_transient('embl_global_blocklist_updated', true, 60);
+            set_transient('embl_admin_notice', [
+                'setting' => 'embl_global_blocklist',
+                'code' => 'embl_global_blocklist_updated',
                 'message' => __('The global blocklist has been updated.', 'email-blocklist'),
                 'type' => 'updated',
             ], 30);
         } else {
-            set_transient('eb_admin_notice', [
-                'setting' => 'eb_global_blocklist',
-                'code' => 'eb_global_blocklist_updated',
+            set_transient('embl_admin_notice', [
+                'setting' => 'embl_global_blocklist',
+                'code' => 'embl_global_blocklist_updated',
                 'message' => __('The global blocklist has not been updated. Please try again later.', 'email-blocklist'),
                 'type' => 'error',
             ], 30);
@@ -326,19 +326,19 @@ class EmailBlocklist
 
     public function displayAdminNotices(): void
     {
-        $notice = get_transient('eb_admin_notice');
+        $notice = get_transient('embl_admin_notice');
 
         if (! $notice) {
             return;
         }
 
         add_settings_error($notice['setting'], $notice['code'], $notice['message'], $notice['type']);
-        delete_transient('eb_admin_notice');
+        delete_transient('embl_admin_notice');
     }
 
     public function updateGlobalBlocklistCronInit(): void
     {
-        if (! get_option('eb_global_blocklist_enabled')) {
+        if (! get_option('embl_global_blocklist_enabled')) {
             return;
         }
 

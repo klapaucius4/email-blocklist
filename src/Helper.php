@@ -21,7 +21,7 @@ class Helper
 
     public static function getGlobalBlocklist(bool $returnAsText = false): array|string
     {
-        $globalBlocklist = get_option('eb_global_blocklist', []);
+        $globalBlocklist = get_option('embl_global_blocklist', []);
 
         if (! $returnAsText) {
             return (array) $globalBlocklist;
@@ -42,7 +42,7 @@ class Helper
 
     public static function getGlobalBlocklistCount(): int
     {
-        return count(get_option('eb_global_blocklist', []));
+        return count(get_option('embl_global_blocklist', []));
     }
 
     public static function sanitizeListField(string $inputValue, string $settingName): string
@@ -132,12 +132,12 @@ class Helper
 
         [$local, $domain] = explode('@', $email, 2);
 
-        if (get_option('eb_block_plus_emails') && strpos($local, '+') !== false) {
+        if (get_option('embl_block_plus_emails') && strpos($local, '+') !== false) {
             return true;
         }
 
-        $localBlocklist = get_option('eb_local_blocklist', '');
-        $localAllowlist = get_option('eb_local_allowlist', '');
+        $localBlocklist = get_option('embl_local_blocklist', '');
+        $localAllowlist = get_option('embl_local_allowlist', '');
 
         $localBlocklistArray = array_map('strtolower', array_filter(array_map('trim', explode("\n", $localBlocklist))));
         $localAllowlistArray = array_map('strtolower', array_filter(array_map('trim', explode("\n", $localAllowlist))));
@@ -150,8 +150,8 @@ class Helper
             return true;
         }
 
-        if (get_option('eb_global_blocklist_enabled')) {
-            $globalBlocklist = get_option('eb_global_blocklist', []);
+        if (get_option('embl_global_blocklist_enabled')) {
+            $globalBlocklist = get_option('embl_global_blocklist', []);
             $globalBlocklist = array_map('strtolower', array_filter(array_map('trim', $globalBlocklist)));
 
             if (in_array($domain, $globalBlocklist, true) || in_array($email, $globalBlocklist, true)) {
@@ -182,6 +182,6 @@ class Helper
     {
         $url = add_query_arg(['page' => 'email-blocklist-settings', 'update_global_blocklist' => 1], admin_url('options-general.php'));
 
-        return wp_nonce_url($url, 'eb_update_global_blocklist');
+        return wp_nonce_url($url, 'embl_update_global_blocklist');
     }
 }
