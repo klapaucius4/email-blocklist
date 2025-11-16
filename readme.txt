@@ -45,6 +45,7 @@ Yes, Email Blocklist integrates seamlessly with WordPress core registration and 
 == Changelog ==
 = 1.1.1 =
 * Add proper escaping of outputs
+* Change the prefixes for declarations, globals and stored data from 'eb' to 'embl'
 
 = 1.1.0 =
 * Change the 'global blocklist update time setting' from universal to local
