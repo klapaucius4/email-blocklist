@@ -3,7 +3,7 @@ Contributors: klapaucius4
 Tags: email blocklist, disposable emails, temporary emails, validate email, spam prevention, user registration, wordpress security, fake accounts, block domains, antispam
 Requires at least: 5.8
 Tested up to: 6.8
-Stable tag: 1.0.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 
 Keep your WordPress site clean by blocking signups and comments from temporary or disposable email domains. 100% free, no paid APIs.
@@ -14,6 +14,8 @@ Email Blocklist helps you keep your WordPress site safe and clean by preventing 
 Spam registrations and fake accounts often rely on throwaway email addresses. With Email Blocklist, you can easily stop them at the source. The plugin lets you build and manage your own custom blocklist of domains to prevent low-quality signups, spam comments, and fake interactions.
 
 Unlike many similar plugins, Email Blocklist is completely free and does not rely on any paid APIs or third-party services. Everything runs directly on your WordPress installation. No hidden costs, no subscriptions – just a lightweight solution that does one job and does it well.
+
+The plugin uses a global blocklist stored in two JSON files on its public GitHub repository — one containing the list of blocked domains and another holding basic metadata. The blocklist is downloaded during plugin activation, and a daily WP-Cron task checks for updates. If a newer version is available, the list is refreshed automatically. You can also trigger a manual update from the plugin’s settings page in the WordPress admin panel.
 
 == Installation ==
 1. Download and install the plugin from the WordPress Plugin Directory.
@@ -41,6 +43,10 @@ Absolutely. You can manage your own blocklist in the plugin settings.
 Yes, Email Blocklist integrates seamlessly with WordPress core registration and comments, and should work with most plugins that rely on standard email fields.
 
 == Changelog ==
+= 1.1.1 =
+* Add proper escaping of outputs
+* Change the prefixes for declarations, globals and stored data from 'eb' to 'embl'
+
 = 1.1.0 =
 * Change the 'global blocklist update time setting' from universal to local
 * Implement automatic global blocklist updates via CRON (daily)
