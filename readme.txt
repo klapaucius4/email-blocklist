@@ -3,7 +3,7 @@ Contributors: klapaucius4
 Tags: email blocklist, disposable emails, temporary emails, validate email, spam prevention, user registration, wordpress security, fake accounts, block domains, antispam
 Requires at least: 5.8
 Tested up to: 6.8
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 
 Keep your WordPress site clean by blocking signups and comments from temporary or disposable email domains. 100% free, no paid APIs.
@@ -15,7 +15,18 @@ Spam registrations and fake accounts often rely on throwaway email addresses. Wi
 
 Unlike many similar plugins, Email Blocklist is completely free and does not rely on any paid APIs or third-party services. Everything runs directly on your WordPress installation. No hidden costs, no subscriptions – just a lightweight solution that does one job and does it well.
 
-The plugin uses a global blocklist stored in two JSON files on its public GitHub repository — one containing the list of blocked domains and another holding basic metadata. The blocklist is downloaded during plugin activation, and a daily WP-Cron task checks for updates. If a newer version is available, the list is refreshed automatically. You can also trigger a manual update from the plugin’s settings page in the WordPress admin panel.
+== External Service Usage ==
+This plugin uses a public GitHub repository to fetch a global blocklist. 
+One JSON file contains the list of blocked domains (https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist.json), 
+and another holds basic metadata (https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist-meta.json).
+
+The blocklist is downloaded during plugin activation. A daily WP-Cron task checks for updates, 
+and the list is refreshed automatically if a newer version is available. 
+You can also trigger a manual update from the plugin settings page.
+
+Note: This plugin sends requests to GitHub to fetch the blocklist files. 
+By using this plugin, data is transmitted to GitHub under GitHub's Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) 
+and GitHub Privacy Statement (https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement).
 
 == Installation ==
 1. Download and install the plugin from the WordPress Plugin Directory.
@@ -43,6 +54,11 @@ Absolutely. You can manage your own blocklist in the plugin settings.
 Yes, Email Blocklist integrates seamlessly with WordPress core registration and comments, and should work with most plugins that rely on standard email fields.
 
 == Changelog ==
+= 1.1.2 =
+* Implement escaping functions for all other displayed data
+* Add prefix to scheduled WP Cron event hook name
+* Updated readme files to document use of external service (global blocklist at GitHub)
+
 = 1.1.1 =
 * Add proper escaping of outputs
 * Change the prefixes for declarations, globals and stored data from 'eb' to 'embl'
