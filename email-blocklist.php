@@ -4,7 +4,7 @@
  * Plugin Name:       Email Blocklist
  * Plugin URI:        https://wordpress.org/plugins/email-blocklist/
  * Description:       Keep your WordPress site clean by blocking unwanted signups and comments with a blocklist of spam and temporary email domains.
- * Version:           1.1.1
+ * Version:           1.1.2
  * Requires at least: 5.2
  * Requires PHP:      7.4
  * Author:            Michał Kowalik
@@ -52,7 +52,7 @@ class EmailBlocklist
         add_action('admin_notices', [$this, 'displayAdminNotices']);
 
         add_action('wp', [$this, 'updateGlobalBlocklistCronInit']);
-        add_action('update_global_blocklist_cron_hook', [$this, 'updateGlobalBlocklistCronTask']);
+        add_action('embl_update_global_blocklist_cron_hook', [$this, 'updateGlobalBlocklistCronTask']);
 
     }
 
@@ -220,7 +220,7 @@ class EmailBlocklist
 
     public function loadAdminStyle()
     {
-        wp_enqueue_style('embl_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.1.1');
+        wp_enqueue_style('embl_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.1.2');
     }
 
     /**
@@ -342,13 +342,13 @@ class EmailBlocklist
             return;
         }
 
-        if (wp_next_scheduled('update_global_blocklist_cron_hook')) {
+        if (wp_next_scheduled('embl_update_global_blocklist_cron_hook')) {
             return;
         }
 
         $midnight = strtotime('tomorrow midnight');
 
-        wp_schedule_event($midnight, 'daily', 'update_global_blocklist_cron_hook');
+        wp_schedule_event($midnight, 'daily', 'embl_update_global_blocklist_cron_hook');
     }
 
     public function updateGlobalBlocklistCronTask(): void
