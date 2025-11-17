@@ -26,13 +26,13 @@ use EmailBlocklist\Helper;
                     </label>
                 </th>
                 <td>
-                    <input type="checkbox" id="embl_enabled" name="embl_enabled" value="1" <?php checked('1', get_option('embl_enabled')); ?> />
+                    <input type="checkbox" id="embl_enabled" name="embl_enabled" value="1" <?php checked('1', esc_attr(get_option('embl_enabled'))); ?> />
                 </td>
             </tr>
             <tr>
                 <th scope="row">
                     <label for="embl_local_blocklist">
-                        <?php esc_html_e('Local blocklist', 'email-blocklist') ?> (<?php echo Helper::getCounOfLinexOfField('embl_local_blocklist'); ?>)
+                        <?php esc_html_e('Local blocklist', 'email-blocklist') ?> (<?php echo esc_html(Helper::getCounOfLinexOfField('embl_local_blocklist')); ?>)
                     </label>
                     <p class="label-desc"><?php esc_html_e('Enter domain names (one per line) to block them. You can also enter a full email address - in this case, only that specific address will be blocked.', 'email-blocklist'); ?></p>
                 </th>
@@ -44,7 +44,7 @@ use EmailBlocklist\Helper;
             <tr valign="top">
                 <th scope="row">
                     <label for="embl_local_allowlist">
-                        <?php esc_html_e('Local allowlist', 'email-blocklist') ?> (<?php echo Helper::getCounOfLinexOfField('embl_local_allowlist'); ?>)
+                        <?php esc_html_e('Local allowlist', 'email-blocklist') ?> (<?php echo esc_html(Helper::getCounOfLinexOfField('embl_local_allowlist')); ?>)
                     </label>
                     <p class="label-desc"><?php esc_html_e('Enter domain names, one per line, to exclude them from being blocked (if they are on the global blocklist). You can also enter a full email address - then that specific email will be excluded from being blocked.', 'email-blocklist'); ?></p>
                 </th>
@@ -60,7 +60,7 @@ use EmailBlocklist\Helper;
                     </label>
                 </th>
                 <td>
-                    <input type="checkbox" id="embl_global_blocklist_enabled" name="embl_global_blocklist_enabled" value="1" <?php checked('1', get_option('embl_global_blocklist_enabled')); ?> />
+                    <input type="checkbox" id="embl_global_blocklist_enabled" name="embl_global_blocklist_enabled" value="1" <?php checked('1', esc_attr(get_option('embl_global_blocklist_enabled'))); ?> />
                 </td>
             </tr>
             <tr valign="top">
@@ -68,14 +68,14 @@ use EmailBlocklist\Helper;
                     <label for="embl_global_blocklist">
                         <?php esc_html_e('Global blocklist', 'email-blocklist') ?>
                     </label>
-                    <p class="label-desc"><?php esc_html_e('Number of domains', 'email-blocklist'); ?>: <?php echo Helper::getGlobalBlocklistCount(); ?></p>
-                    <p class="label-desc"><?php esc_html_e('Blocklist version', 'email-blocklist'); ?>: <?php echo get_option('embl_global_blocklist_version', '-'); ?></p>
-                    <p class="label-desc"><?php esc_html_e('Updated', 'email-blocklist'); ?>: <?php echo date('Y-m-d H:i:s', get_option('embl_global_blocklist_update_timestamp', 0)) ?></p>
+                    <p class="label-desc"><?php esc_html_e('Number of domains', 'email-blocklist'); ?>: <?php echo esc_html(Helper::getGlobalBlocklistCount()); ?></p>
+                    <p class="label-desc"><?php esc_html_e('Blocklist version', 'email-blocklist'); ?>: <?php echo esc_html(get_option('embl_global_blocklist_version', '-')); ?></p>
+                    <p class="label-desc"><?php esc_html_e('Updated', 'email-blocklist'); ?>: <?php echo esc_html(date('Y-m-d H:i:s', get_option('embl_global_blocklist_update_timestamp', 0))); ?></p>
                     <p class="mb-0"><a href="<?php echo esc_url(Helper::getUpdateGlobalBlocklistUrl()); ?>" class="button"><?php esc_html_e('Update global blocklist', 'email-blocklist'); ?></a></p>
                     <p class="label-desc"><?php esc_html_e('(the global blocklist is automatically updated daily by WP-Cron)', 'email-blocklist'); ?></p>
                 </th>
                 <td>
-                    <textarea rows="8" class="regular-text" id="embl_global_blocklist" name="embl_global_blocklist" disabled><?php echo Helper::getGlobalBlocklist(true); ?></textarea>
+                    <textarea rows="8" class="regular-text" id="embl_global_blocklist" name="embl_global_blocklist" disabled><?php echo esc_textarea(Helper::getGlobalBlocklist(true)); ?></textarea>
                     <p class="description"><?php esc_html_e('Domains fetched from the global database. If you want to disable blocking for any of them, add it above to the \'Local allowlist\' field.', 'email-blocklist') ?></p>
                 </td>
             </tr>
@@ -87,7 +87,7 @@ use EmailBlocklist\Helper;
                     <p class="label-desc"><?php esc_html_e('Block all emails containing the "+" character, e.g. "johnsmith+test1@gmail.com".', 'email-blocklist'); ?></p>
                 </th>
                 <td>
-                    <input type="checkbox" id="embl_block_plus_emails" name="embl_block_plus_emails" value="1" <?php checked('1', get_option('embl_block_plus_emails')); ?> />
+                    <input type="checkbox" id="embl_block_plus_emails" name="embl_block_plus_emails" value="1" <?php checked('1', esc_attr(get_option('embl_block_plus_emails'))); ?> />
                 </td>
             </tr>
             <tr>
