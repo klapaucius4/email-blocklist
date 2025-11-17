@@ -12,8 +12,15 @@ Spam registrations and fake accounts often rely on throwaway email addresses. Wi
 
 Unlike many similar plugins, **Email Blocklist is completely free and does not rely on any paid APIs or third-party services**. Everything runs directly on your WordPress installation. No hidden costs, no subscriptions – just a lightweight solution that does one job and does it well.
 
-The plugin uses a global blocklist stored in two JSON files on its public GitHub repository — one containing the [list of blocked domains](https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist.json) and another holding [basic metadata](https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist-meta.json). The blocklist is downloaded during plugin activation, and a daily WP-Cron task checks for updates. If a newer version is available, the list is refreshed automatically. You can also trigger a manual update from the plugin’s settings page in the WordPress admin panel.
 
+### External Service Usage
+This plugin uses a public GitHub repository to fetch a global blocklist:
+* [blocklist.json](https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist.json) – list of blocked domains
+* [blocklist-meta.json](https://raw.githubusercontent.com/klapaucius4/email-blocklist/refs/heads/master/blocklist-meta.json) – metadata about the blocklist
+
+The blocklist is downloaded during plugin activation. A daily WP-Cron task checks for updates, and the list is refreshed automatically if a newer version is available. You can also trigger a manual update from the plugin settings page.
+
+Note: This plugin sends requests to GitHub to fetch the blocklist files. By using this plugin, data is transmitted to GitHub under [GitHub’s Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) and [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
 
 ---
 
