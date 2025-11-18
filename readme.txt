@@ -57,6 +57,7 @@ Yes, Email Blocklist integrates seamlessly with WordPress core registration and 
 = 1.1.3 =
 * Fix typo in composer.json
 * Update the global blocklist
+* Remove the unnecessary ‘languages’ folder
 
 = 1.1.2 =
 * Implement escaping functions for all other displayed data
