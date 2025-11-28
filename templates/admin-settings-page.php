@@ -106,7 +106,7 @@ use EmailBlocklist\Helper;
                     <p class="label-desc"><?php esc_html_e('Scan and highlight existing accounts with blocklisted emails at the', 'email-blocklist'); ?> <a href="<?php echo esc_url(admin_url('users.php')); ?>"><?php echo esc_html_e('Users Admin Page', 'email-blocklist'); ?></a>.</p>
                 </th>
                 <td>
-                    <p class="mb-0"><a href="<?php // echo esc_url(Helper::getScanExistingUsersUrl()); ?>" class="button"><?php esc_html_e('Scan Existing Users', 'email-blocklist'); ?></a></p>
+                    <p class="mb-0"><a href="<?php echo esc_url(Helper::getScanExistingUsersUrl()); ?>" class="button"><?php esc_html_e('Scan Existing Users', 'email-blocklist'); ?></a></p>
                 </td>
             </tr>
         </table>
