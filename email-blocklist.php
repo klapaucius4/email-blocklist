@@ -54,6 +54,10 @@ class EmailBlocklist
         add_action('embl_update_global_blocklist_cron_hook', [$this, 'updateGlobalBlocklistCronTask']);
 
         add_action('load-settings_page_email-blocklist-settings', [$this, 'callScanExistingUsers']);
+        add_filter('manage_users_columns', [$this, 'addUserColumn']);
+        add_filter('manage_users_custom_column', [$this, 'showUserColumnContent'], 10, 3);
+        add_filter('manage_users_sortable_columns', [$this, 'makeColumnSortable']);
+        add_action('pre_get_users', [$this, 'sortUsersByMeta']);
     }
 
     public function pluginActivate(): void
@@ -375,5 +379,59 @@ class EmailBlocklist
         wp_safe_redirect(esc_url(admin_url('users.php')));
 
         exit;
+    }
+
+    public function addUserColumn($columns): array
+    {
+        $newColumns = [];
+        $lastColumn = 'email';
+
+        foreach ($columns as $key => $title) {
+            $newColumns[$key] = $title;
+
+            if ($key === $lastColumn) {
+                $newColumns['embl_potential_spam_user'] = __( 'Potential Spam User', 'email-blocklist' );
+            }
+        }
+
+        return $newColumns;
+    }
+
+    public function showUserColumnContent(string $output, string $columnName, int $userId)
+    {
+        if ('embl_potential_spam_user' === $columnName) {
+            $value = get_user_meta($userId, 'embl_potential_spam_user', true);
+    
+            if (empty($value)) {
+                return '🟡' . ' ' . esc_html__('Sync required', 'email-blocklist');
+            }
+
+            if (intval($value) === 1) {
+                return '🔴' . ' ' . esc_html__('Yes', 'email-blocklist');
+            }
+
+            if (intval($value) === 0) {
+                return '🟢' . ' ' . esc_html__('No', 'email-blocklist');
+            }
+    
+            return esc_html($value);
+        }
+    
+        return $output;
+    }
+
+    public function makeColumnSortable($sortableColumns)
+    {
+        $sortableColumns['embl_potential_spam_user'] = 'embl_potential_spam_user';
+
+        return $sortableColumns;
+    }
+
+    public function sortUsersByMeta($query)
+    {
+        if ('embl_potential_spam_user' === $query->get('orderby')) {
+            $query->set('meta_key', 'embl_potential_spam_user');
+            $query->set('orderby', 'meta_value');
+        }
     }
 }
