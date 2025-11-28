@@ -53,6 +53,7 @@ class EmailBlocklist
         add_action('wp', [$this, 'updateGlobalBlocklistCronInit']);
         add_action('embl_update_global_blocklist_cron_hook', [$this, 'updateGlobalBlocklistCronTask']);
 
+        add_action('load-settings_page_email-blocklist-settings', [$this, 'callScanExistingUsers']);
     }
 
     public function pluginActivate(): void
@@ -353,5 +354,26 @@ class EmailBlocklist
     public function updateGlobalBlocklistCronTask(): void
     {
         $this->updateGlobalBlocklist();
+    }
+
+    public function callScanExistingUsers(): void
+    {
+        if (! current_user_can('manage_options')) {
+            return;
+        }
+
+        if (empty($_GET['scan_existing_users']) || 1 !== absint($_GET['scan_existing_users'])) {
+            return;
+        }
+
+        if (empty($_GET['_wpnonce']) || ! wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'embl_scan_existing_users')) {
+            wp_die(__('Missing or invalid nonce.', 'email-blocklist'));
+        }
+
+        // to do
+
+        wp_safe_redirect(esc_url(admin_url('users.php')));
+
+        exit;
     }
 }
