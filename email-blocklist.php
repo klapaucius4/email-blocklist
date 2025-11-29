@@ -388,7 +388,15 @@ class EmailBlocklist
             update_user_meta($user->ID, 'embl_potential_spam_user', $isPotentialSpamUser);
         }
 
-        wp_safe_redirect(esc_url(admin_url('users.php')));
+        wp_safe_redirect(
+            add_query_arg(
+                [
+                    'orderby' => 'embl_potential_spam_user',
+                    'order'   => 'desc',
+                ],
+                admin_url('users.php')
+            )
+        );
 
         exit;
     }
