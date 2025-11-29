@@ -402,7 +402,7 @@ class EmailBlocklist
         if ('embl_potential_spam_user' === $columnName) {
             $value = get_user_meta($userId, 'embl_potential_spam_user', true);
     
-            if (empty($value)) {
+            if ($value === '') {
                 return '🟡' . ' ' . esc_html__('Sync required', 'email-blocklist');
             }
 
