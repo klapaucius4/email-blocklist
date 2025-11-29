@@ -374,7 +374,19 @@ class EmailBlocklist
             wp_die(__('Missing or invalid nonce.', 'email-blocklist'));
         }
 
-        // to do
+        $users = get_users([
+            'fields' => ['ID', 'user_email', 'user_login']
+        ]);
+
+        foreach ($users as $user) {
+            $isPotentialSpamUser = 0;
+
+            if (Helper::checkIfEmailIsBlocked($user->user_email)) {
+                $isPotentialSpamUser = 1;
+            }
+
+            update_user_meta($user->ID, 'embl_potential_spam_user', $isPotentialSpamUser);
+        }
 
         wp_safe_redirect(esc_url(admin_url('users.php')));
 
