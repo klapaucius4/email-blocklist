@@ -197,7 +197,7 @@ class Helper
         $allUsers = get_users([
             'fields' => 'ID',
         ]);
-        
+
         foreach ($allUsers as $userId) {
             delete_user_meta($userId, 'embl_potential_spam_user');
         }

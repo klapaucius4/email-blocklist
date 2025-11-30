@@ -121,7 +121,7 @@ class EmailBlocklist
 
         if (! isset($decodedBlocklistMetaBody->blocklist_version)) {
             Helper::logError(__('The global blocklist version cannot be read.', 'email-blocklist'));
-            
+
             return false;
         }
 
@@ -420,15 +420,15 @@ class EmailBlocklist
     public function showNoticesAftetScanExistingUsers(): void
     {
         global $pagenow;
-    
+
         if ($pagenow !== 'users.php') {
             return;
         }
-    
+
         if (empty($_GET['embl_scan_existing_users_completed'])) {
             return;
         }
-    
+
         ?>
         <div class="notice notice-success is-dismissible">
             <p><?php echo esc_html__('The scan of existing users for potential spam accounts has been completed.', 'email-blocklist'); ?></p>
@@ -456,7 +456,7 @@ class EmailBlocklist
     {
         if ('embl_potential_spam_user' === $columnName) {
             $value = get_user_meta($userId, 'embl_potential_spam_user', true);
-    
+
             if ($value === '') {
                 return '🟡' . ' ' . esc_html__('Sync required', 'email-blocklist');
             }
@@ -468,10 +468,10 @@ class EmailBlocklist
             if (intval($value) === 0) {
                 return '🟢' . ' ' . esc_html__('No', 'email-blocklist');
             }
-    
+
             return esc_html($value);
         }
-    
+
         return $output;
     }
 
@@ -495,7 +495,7 @@ class EmailBlocklist
         if ($which !== 'top') {
             return;
         }
-    
+
         echo '<a href="' . Helper::getScanExistingUsersUrl() . '" class="button embl-scan-button"><span class="embl-scan-button__text">🔎 ' . esc_html__('Scan existing users', 'email-blocklist') . '</span><span class="embl-scan-button__desc">' . esc_html__('for potential spam accounts' , 'email-blocklist') . '</span></a>';
     }
 }
