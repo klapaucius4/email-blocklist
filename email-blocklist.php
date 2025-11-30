@@ -378,18 +378,30 @@ class EmailBlocklist
         }
 
         $users = get_users([
-            'fields' => ['ID', 'user_email', 'user_login']
+            'fields' => ['ID', 'user_email']
         ]);
 
-        foreach ($users as $user) {
-            $isPotentialSpamUser = 0;
+        $batchSize = 100;
+        $offset = 0;
 
-            if (Helper::checkIfEmailIsBlocked($user->user_email)) {
-                $isPotentialSpamUser = 1;
+        do {
+            $users = get_users([
+                'fields' => ['ID', 'user_email'],
+                'number' => $batchSize,
+                'offset' => $offset,
+            ]);
+
+            foreach ($users as $user) {
+                update_user_meta(
+                    $user->ID,
+                    'embl_potential_spam_user',
+                    Helper::checkIfEmailIsBlocked($user->user_email) ? 1 : 0
+                );
             }
 
-            update_user_meta($user->ID, 'embl_potential_spam_user', $isPotentialSpamUser);
-        }
+            $offset += $batchSize;
+
+        } while (count($users) === $batchSize);
 
         wp_safe_redirect(
             add_query_arg(
