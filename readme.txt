@@ -3,7 +3,7 @@ Contributors: klapaucius4
 Tags: disposable emails, temporary emails, validate email, spam prevention, user registration, wordpress security, fake accounts, block domains, antispam
 Requires at least: 5.2
 Tested up to: 6.8
-Stable tag: 1.1.3
+Stable tag: 1.2.0
 License: GPLv2 or later
 
 Keep your WordPress site clean by blocking signups and comments from temporary or disposable email domains. 100% free, no paid APIs.
@@ -54,7 +54,7 @@ Absolutely. You can manage your own blocklist in the plugin settings.
 Yes, Email Blocklist integrates seamlessly with WordPress core registration and comments, and should work with most plugins that rely on standard email fields.
 
 == Changelog ==
-= 1.1.4 =
+= 1.2.0 =
 * Modify plugin metadata and plugin header
 * Add over 60k domains to the global blocklist
 
