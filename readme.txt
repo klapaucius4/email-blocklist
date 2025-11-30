@@ -55,6 +55,7 @@ Yes, Email Blocklist integrates seamlessly with WordPress core registration and 
 
 == Changelog ==
 = 1.2.0 =
+* Add feature to scan existing users for potential spam accounts
 * Modify plugin metadata and plugin header
 * Add over 60k domains to the global blocklist
 
