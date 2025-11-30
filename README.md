@@ -12,7 +12,7 @@ Spam registrations and fake accounts often rely on throwaway email addresses. Wi
 
 Unlike many similar plugins, **Email Blocklist is completely free and does not rely on any paid APIs or third-party services**. Everything runs directly on your WordPress installation. No hidden costs, no subscriptions – just a lightweight solution that does one job and does it well.
 
-Email Blocklist also lets you scan existing users and flag accounts using suspicious or blocked email domains as potential spam, highlighting them in the user list so you can easily filter or remove them if needed.
+This plugin also lets you scan existing users and flag accounts using suspicious or blocked email domains as potential spam, highlighting them in the user list so you can easily filter or remove them if needed.
 
 ### External Service Usage
 This plugin uses a public GitHub repository to fetch a global blocklist:
