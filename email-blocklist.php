@@ -101,6 +101,7 @@ class EmailBlocklist
         delete_option('embl_global_blocklist_update_timestamp');
         delete_option('embl_block_plus_emails');
         delete_option('embl_blocked_email_notice_text');
+        $this->clearMetaDataOfAllUsers();
     }
 
     private function updateGlobalBlocklist(): bool
@@ -463,5 +464,16 @@ class EmailBlocklist
         }
     
         echo '<a href="' . Helper::getScanExistingUsersUrl() . '" class="button embl-scan-button"><span class="embl-scan-button__text">🔎 ' . esc_html__('Scan all users', 'email-blocklist') . '</span><span class="embl-scan-button__desc">' . esc_html__('for potential spam accounts' , 'email-blocklist') . '</span></a>';
+    }
+
+    private function clearMetaDataOfAllUsers(): void
+    {
+        $allUsers = get_users([
+            'fields' => 'ID',
+        ]);
+        
+        foreach ($allUsers as $userId) {
+            delete_user_meta($userId, 'embl_potential_spam_user');
+        }
     }
 }
