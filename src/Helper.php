@@ -191,4 +191,15 @@ class Helper
 
         return wp_nonce_url($url, 'embl_scan_existing_users');
     }
+
+    public static function clearMetaDataOfAllUsers(): void
+    {
+        $allUsers = get_users([
+            'fields' => 'ID',
+        ]);
+
+        foreach ($allUsers as $userId) {
+            delete_user_meta($userId, 'embl_potential_spam_user');
+        }
+    }
 }
