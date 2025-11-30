@@ -10,10 +10,12 @@
 .embl-scan-button {
     padding: 2px 10px !important;
 }
+
 .embl-scan-button > span {
     display: block;
     text-align: center;
 }
+
 .embl-scan-button__text {
     font-size: 13px;
     line-height: 13px;
