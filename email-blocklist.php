@@ -377,38 +377,45 @@ class EmailBlocklist
             wp_die(__('Missing or invalid nonce.', 'email-blocklist'));
         }
 
+        $limit = 100;
+
         $users = get_users([
-            'fields' => ['ID', 'user_email']
+            'fields' => ['ID', 'user_email'],
+            'number' => $limit,
+            'meta_query' => [
+                [
+                    'key' => 'embl_potential_spam_user',
+                    'compare' => 'NOT EXISTS',
+                ],
+            ],
         ]);
 
-        $batchSize = 100;
-        $offset = 0;
+        foreach ($users as $user) {
+            update_user_meta(
+                $user->ID,
+                'embl_potential_spam_user',
+                Helper::checkIfEmailIsBlocked($user->user_email) ? 1 : 0
+            );
+        }
 
-        do {
-            $users = get_users([
-                'fields' => ['ID', 'user_email'],
-                'number' => $batchSize,
-                'offset' => $offset,
-            ]);
-
-            foreach ($users as $user) {
-                update_user_meta(
-                    $user->ID,
-                    'embl_potential_spam_user',
-                    Helper::checkIfEmailIsBlocked($user->user_email) ? 1 : 0
-                );
-            }
-
-            $offset += $batchSize;
-
-        } while (count($users) === $batchSize);
+        $usersRemaining = get_users([
+            'fields' => ['ID'],
+            'number' => 1,
+            'meta_query' => [
+                [
+                    'key' => 'embl_potential_spam_user',
+                    'compare' => 'NOT EXISTS',
+                ],
+            ],
+        ]);
 
         wp_safe_redirect(
             add_query_arg(
                 [
                     'orderby' => 'embl_potential_spam_user',
                     'order' => 'desc',
-                    'embl_scan_existing_users_completed' => 1
+                    'embl_scan_existing_users_completed' => 1,
+                    'users_remaining' => count($usersRemaining),
                 ],
                 admin_url('users.php')
             )
@@ -429,9 +436,18 @@ class EmailBlocklist
             return;
         }
 
+        $noticeContent = esc_html__('The scan of existing users for potential spam accounts has been completed.', 'email-blocklist');
+
+        if (isset($_GET['users_remaining']) && parent(intval($_GET['users_remaining']) > 0)) {
+            $noticeContent .= ' ' . sprintf(
+                esc_html__('There are still %d users left to scan. Please click the "Scan Existing Users" button again and continue the scan.', 'email-blocklist'),
+                intval($_GET['users_remaining'])
+            );
+        }
+
         ?>
         <div class="notice notice-success is-dismissible">
-            <p><?php echo esc_html__('The scan of existing users for potential spam accounts has been completed.', 'email-blocklist'); ?></p>
+            <p><?php echo $noticeContent; ?></p>
         </div>
         <?php
     }

@@ -56,6 +56,9 @@ Absolutely. You can manage your own blocklist in the plugin settings.
 Yes, Email Blocklist integrates seamlessly with WordPress core registration and comments, and should work with most plugins that rely on standard email fields.
 
 == Changelog ==
+= 1.2.2 =
+* Add a limit on the number of users scanned per click to prevent server overload
+
 = 1.2.1 =
 * Fix error with clearing user meta data after plugin uninstall
 * Add info about scan existing users into readme files
