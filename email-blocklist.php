@@ -400,7 +400,6 @@ class EmailBlocklist
 
         $usersRemaining = get_users([
             'fields' => ['ID'],
-            'number' => 1,
             'meta_query' => [
                 [
                     'key' => 'embl_potential_spam_user',
@@ -436,17 +435,23 @@ class EmailBlocklist
             return;
         }
 
-        $noticeContent = esc_html__('The scan of existing users for potential spam accounts has been completed.', 'email-blocklist');
-
-        if (isset($_GET['users_remaining']) && parent(intval($_GET['users_remaining']) > 0)) {
-            $noticeContent .= ' ' . sprintf(
-                esc_html__('There are still %d users left to scan. Please click the "Scan Existing Users" button again and continue the scan.', 'email-blocklist'),
+        if (isset($_GET['users_remaining']) && absint($_GET['users_remaining']) > 0) {
+            $noticeType = 'notice-warning';
+            $noticeContent = sprintf(
+                esc_html__('There are still %d users left to scan of existing users for potential spam accounts.', 'email-blocklist'),
                 intval($_GET['users_remaining'])
             );
+            $noticeContent .= ' ' . esc_html__('Please click the button', 'email-blocklist');
+            $noticeContent .= ' ' . '<a href="' . esc_url(Helper::getScanExistingUsersUrl()) . '">' . esc_html__('Scan Existing Users', 'email-blocklist') . '</a>';
+            $noticeContent .= ' ' . esc_html__('button again to continue the scanning.', 'email-blocklist');
+            
+        } else {
+            $noticeType = 'notice-success';
+            $noticeContent = esc_html__('The scan of existing users for potential spam accounts has been completed.', 'email-blocklist');
         }
 
         ?>
-        <div class="notice notice-success is-dismissible">
+        <div class="notice <?php echo $noticeType; ?> is-dismissible">
             <p><?php echo $noticeContent; ?></p>
         </div>
         <?php
