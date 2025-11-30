@@ -424,7 +424,7 @@ class EmailBlocklist
         <?php
     }
 
-    public function addUserColumn($columns): array
+    public function addUserColumn(array $columns): array
     {
         $newColumns = [];
         $lastColumn = 'email';
@@ -440,7 +440,7 @@ class EmailBlocklist
         return $newColumns;
     }
 
-    public function showUserColumnContent(string $output, string $columnName, int $userId)
+    public function showUserColumnContent(string $output, string $columnName, int $userId): string
     {
         if ('embl_potential_spam_user' === $columnName) {
             $value = get_user_meta($userId, 'embl_potential_spam_user', true);
@@ -463,14 +463,14 @@ class EmailBlocklist
         return $output;
     }
 
-    public function makeColumnSortable($sortableColumns)
+    public function makeColumnSortable(array $sortableColumns): array
     {
         $sortableColumns['embl_potential_spam_user'] = 'embl_potential_spam_user';
 
         return $sortableColumns;
     }
 
-    public function sortUsersByMeta($query)
+    public function sortUsersByMeta(WP_User_Query $query): void
     {
         if ('embl_potential_spam_user' === $query->get('orderby')) {
             $query->set('meta_key', 'embl_potential_spam_user');
@@ -478,7 +478,7 @@ class EmailBlocklist
         }
     }
 
-    public function addScanExistingUsersButton($which): void
+    public function addScanExistingUsersButton(string $which): void
     {
         if ($which !== 'top') {
             return;
