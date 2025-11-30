@@ -22,6 +22,8 @@ The blocklist is downloaded during plugin activation. A daily WP-Cron task check
 
 Note: This plugin sends requests to GitHub to fetch the blocklist files. By using this plugin, data is transmitted to GitHub under [GitHub’s Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) and [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
 
+Email Blocklist also lets you scan existing users and flag accounts using suspicious or blocked email domains as potential spam, highlighting them in the user list so you can easily filter or remove them if needed.
+
 ---
 
 ## Features

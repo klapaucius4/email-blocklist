@@ -4,7 +4,7 @@
  * Plugin Name:       Email Blocklist
  * Plugin URI:        https://wordpress.org/plugins/email-blocklist/
  * Description:       Keep your WordPress site clean by blocking unwanted signups and comments with a blocklist of spam and temporary email domains.
- * Version:           1.2.0
+ * Version:           1.2.1
  * Requires at least: 5.2
  * Requires PHP:      7.4
  * Author:            Michał Kowalik
@@ -102,7 +102,7 @@ class EmailBlocklist
         delete_option('embl_global_blocklist_update_timestamp');
         delete_option('embl_block_plus_emails');
         delete_option('embl_blocked_email_notice_text');
-        $this->clearMetaDataOfAllUsers();
+        Helper::clearMetaDataOfAllUsers();
     }
 
     private function updateGlobalBlocklist(): bool
@@ -121,7 +121,7 @@ class EmailBlocklist
 
         if (! isset($decodedBlocklistMetaBody->blocklist_version)) {
             Helper::logError(__('The global blocklist version cannot be read.', 'email-blocklist'));
-            
+
             return false;
         }
 
@@ -227,7 +227,7 @@ class EmailBlocklist
 
     public function loadAdminStyle()
     {
-        wp_enqueue_style('embl_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.2.0');
+        wp_enqueue_style('embl_admin_css', plugin_dir_url(__FILE__) . '/assets/admin-style.css', false, '1.2.1');
     }
 
     /**
@@ -378,18 +378,30 @@ class EmailBlocklist
         }
 
         $users = get_users([
-            'fields' => ['ID', 'user_email', 'user_login']
+            'fields' => ['ID', 'user_email']
         ]);
 
-        foreach ($users as $user) {
-            $isPotentialSpamUser = 0;
+        $batchSize = 100;
+        $offset = 0;
 
-            if (Helper::checkIfEmailIsBlocked($user->user_email)) {
-                $isPotentialSpamUser = 1;
+        do {
+            $users = get_users([
+                'fields' => ['ID', 'user_email'],
+                'number' => $batchSize,
+                'offset' => $offset,
+            ]);
+
+            foreach ($users as $user) {
+                update_user_meta(
+                    $user->ID,
+                    'embl_potential_spam_user',
+                    Helper::checkIfEmailIsBlocked($user->user_email) ? 1 : 0
+                );
             }
 
-            update_user_meta($user->ID, 'embl_potential_spam_user', $isPotentialSpamUser);
-        }
+            $offset += $batchSize;
+
+        } while (count($users) === $batchSize);
 
         wp_safe_redirect(
             add_query_arg(
@@ -408,15 +420,15 @@ class EmailBlocklist
     public function showNoticesAftetScanExistingUsers(): void
     {
         global $pagenow;
-    
+
         if ($pagenow !== 'users.php') {
             return;
         }
-    
+
         if (empty($_GET['embl_scan_existing_users_completed'])) {
             return;
         }
-    
+
         ?>
         <div class="notice notice-success is-dismissible">
             <p><?php echo esc_html__('The scan of existing users for potential spam accounts has been completed.', 'email-blocklist'); ?></p>
@@ -444,7 +456,7 @@ class EmailBlocklist
     {
         if ('embl_potential_spam_user' === $columnName) {
             $value = get_user_meta($userId, 'embl_potential_spam_user', true);
-    
+
             if ($value === '') {
                 return '🟡' . ' ' . esc_html__('Sync required', 'email-blocklist');
             }
@@ -456,10 +468,10 @@ class EmailBlocklist
             if (intval($value) === 0) {
                 return '🟢' . ' ' . esc_html__('No', 'email-blocklist');
             }
-    
+
             return esc_html($value);
         }
-    
+
         return $output;
     }
 
@@ -483,18 +495,7 @@ class EmailBlocklist
         if ($which !== 'top') {
             return;
         }
-    
-        echo '<a href="' . Helper::getScanExistingUsersUrl() . '" class="button embl-scan-button"><span class="embl-scan-button__text">🔎 ' . esc_html__('Scan existing users', 'email-blocklist') . '</span><span class="embl-scan-button__desc">' . esc_html__('for potential spam accounts' , 'email-blocklist') . '</span></a>';
-    }
 
-    private function clearMetaDataOfAllUsers(): void
-    {
-        $allUsers = get_users([
-            'fields' => 'ID',
-        ]);
-        
-        foreach ($allUsers as $userId) {
-            delete_user_meta($userId, 'embl_potential_spam_user');
-        }
+        echo '<a href="' . Helper::getScanExistingUsersUrl() . '" class="button embl-scan-button"><span class="embl-scan-button__text">🔎 ' . esc_html__('Scan existing users', 'email-blocklist') . '</span><span class="embl-scan-button__desc">' . esc_html__('for potential spam accounts' , 'email-blocklist') . '</span></a>';
     }
 }
