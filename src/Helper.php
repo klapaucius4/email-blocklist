@@ -184,4 +184,11 @@ class Helper
 
         return wp_nonce_url($url, 'embl_update_global_blocklist');
     }
+
+    public static function getScanExistingUsersUrl(): string
+    {
+        $url = add_query_arg(['page' => 'email-blocklist-settings', 'scan_existing_users' => 1], admin_url('options-general.php'));
+
+        return wp_nonce_url($url, 'embl_scan_existing_users');
+    }
 }

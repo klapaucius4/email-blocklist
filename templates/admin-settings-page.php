@@ -100,6 +100,15 @@ use EmailBlocklist\Helper;
                     <input type="text" id="embl_blocked_email_notice_text" class="regular-text" name="embl_blocked_email_notice_text" value="<?php echo esc_attr(get_option('embl_blocked_email_notice_text')); ?>" placeholder="<?php echo esc_attr(Helper::getDefaultString('blocked_email_notice_text')); ?>" />
                 </td>
             </tr>
+            <tr>
+                <th scope="row">
+                    <p><?php esc_html_e('Scan Existing Users', 'email-blocklist'); ?></p>
+                    <p class="label-desc"><?php esc_html_e('Scan and highlight existing accounts with blocklisted emails at the', 'email-blocklist'); ?> <a href="<?php echo esc_url(admin_url('users.php')); ?>"><?php echo esc_html_e('Users Admin Page', 'email-blocklist'); ?></a>.</p>
+                </th>
+                <td>
+                    <p class="mb-0"><a href="<?php echo esc_url(Helper::getScanExistingUsersUrl()); ?>" class="button"><?php esc_html_e('Scan Existing Users', 'email-blocklist'); ?></a></p>
+                </td>
+            </tr>
         </table>
 
         <?php submit_button(); ?>
