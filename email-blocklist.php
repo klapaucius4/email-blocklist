@@ -54,6 +54,7 @@ class EmailBlocklist
         add_action('embl_update_global_blocklist_cron_hook', [$this, 'updateGlobalBlocklistCronTask']);
 
         add_action('load-settings_page_email-blocklist-settings', [$this, 'callScanExistingUsers']);
+        add_action('admin_notices', [$this, 'showNoticesAftetScanExistingUsers']);
         add_filter('manage_users_columns', [$this, 'addUserColumn']);
         add_filter('manage_users_custom_column', [$this, 'showUserColumnContent'], 10, 3);
         add_filter('manage_users_sortable_columns', [$this, 'makeColumnSortable']);
@@ -394,13 +395,33 @@ class EmailBlocklist
             add_query_arg(
                 [
                     'orderby' => 'embl_potential_spam_user',
-                    'order' => 'desc'
+                    'order' => 'desc',
+                    'embl_scan_existing_users_completed' => 1
                 ],
                 admin_url('users.php')
             )
         );
 
         exit;
+    }
+
+    public function showNoticesAftetScanExistingUsers(): void
+    {
+        global $pagenow;
+    
+        if ($pagenow !== 'users.php') {
+            return;
+        }
+    
+        if (empty($_GET['embl_scan_existing_users_completed'])) {
+            return;
+        }
+    
+        ?>
+        <div class="notice notice-success is-dismissible">
+            <p><?php echo esc_html__('The scan of existing users for potential spam accounts has been completed.', 'email-blocklist'); ?></p>
+        </div>
+        <?php
     }
 
     public function addUserColumn($columns): array
