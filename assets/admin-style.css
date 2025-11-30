@@ -6,3 +6,18 @@
 .mb-0 {
     margin-bottom: 0;;
 }
+
+.embl-scan-button {
+    padding: 2px 10px !important;
+}
+.embl-scan-button__text {
+    display: block;
+    font-size: 13px;
+    line-height: 13px;
+}
+
+.embl-scan-button__desc {
+    display: block;
+    font-size: 9px;
+    line-height: 9px;
+}

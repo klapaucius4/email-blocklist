@@ -58,6 +58,7 @@ class EmailBlocklist
         add_filter('manage_users_custom_column', [$this, 'showUserColumnContent'], 10, 3);
         add_filter('manage_users_sortable_columns', [$this, 'makeColumnSortable']);
         add_action('pre_get_users', [$this, 'sortUsersByMeta']);
+        add_action('manage_users_extra_tablenav', [$this, 'addScanExistingUsersButton'], 10, 1);
     }
 
     public function pluginActivate(): void
@@ -453,5 +454,14 @@ class EmailBlocklist
             $query->set('meta_key', 'embl_potential_spam_user');
             $query->set('orderby', 'meta_value');
         }
+    }
+
+    public function addScanExistingUsersButton($which): void
+    {
+        if ($which !== 'top') {
+            return;
+        }
+    
+        echo '<a href="' . Helper::getScanExistingUsersUrl() . '" class="button embl-scan-button"><span class="embl-scan-button__text">🔎 ' . esc_html__('Scan all users', 'email-blocklist') . '</span><span class="embl-scan-button__desc">' . esc_html__('for potential spam accounts' , 'email-blocklist') . '</span></a>';
     }
 }
