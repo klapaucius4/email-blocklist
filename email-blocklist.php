@@ -394,7 +394,7 @@ class EmailBlocklist
             add_query_arg(
                 [
                     'orderby' => 'embl_potential_spam_user',
-                    'order'   => 'desc',
+                    'order' => 'desc'
                 ],
                 admin_url('users.php')
             )
