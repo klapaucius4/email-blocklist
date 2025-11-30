@@ -202,4 +202,11 @@ class Helper
             delete_user_meta($userId, 'embl_potential_spam_user');
         }
     }
+
+    public static function getResetScansDataUrl(): string
+    {
+        $url = add_query_arg(['page' => 'email-blocklist-settings', 'reset_scans_data' => 1], admin_url('options-general.php'));
+
+        return wp_nonce_url($url, 'embl_reset_scans_data');
+    }
 }
