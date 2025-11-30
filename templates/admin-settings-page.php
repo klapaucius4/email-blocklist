@@ -6,6 +6,7 @@ if (! defined('ABSPATH')) {
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use EmailBlocklist;
 use EmailBlocklist\Helper;
 
 ?>
@@ -106,7 +107,11 @@ use EmailBlocklist\Helper;
                     <p class="label-desc"><?php esc_html_e('Scan and highlight existing accounts with blocklisted emails at the', 'email-blocklist'); ?> <a href="<?php echo esc_url(admin_url('users.php')); ?>"><?php echo esc_html_e('Users Admin Page', 'email-blocklist'); ?></a>.</p>
                 </th>
                 <td>
-                    <p class="mb-0"><a href="<?php echo esc_url(Helper::getScanExistingUsersUrl()); ?>" class="button"><?php esc_html_e('Scan Existing Users', 'email-blocklist'); ?></a></p>
+                    <p class="mb-0">
+                    <a href="<?php echo esc_url(Helper::getScanExistingUsersUrl()); ?>" class="button">🔎 <?php esc_html_e('Scan Existing Users', 'email-blocklist'); ?></a>
+                    <a href="<?php echo esc_url(Helper::getResetScansDataUrl()); ?>" class="button">✖ <?php esc_html_e('Reset all data of previous scans', 'email-blocklist'); ?></a>
+                    </p>
+                    <p class="description"><?php echo sprintf(esc_html__('To prevent server overload, the plugin limits the number of users that can be scanned in a single operation to %1$d. If your database contains more users, you will need to click the scan button multiple times and scan them in batches of %1$d.', 'email-blocklist'), EmailBlocklist::EMBL_SCAN_EXISTING_USERS_BATCH_SIZE); ?></p>
                 </td>
             </tr>
         </table>
