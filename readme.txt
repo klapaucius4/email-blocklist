@@ -59,6 +59,7 @@ Yes, Email Blocklist integrates seamlessly with WordPress core registration and 
 = 1.2.4 =
 * Fix problem with duplicated slashes in the admin style file URL
 * Update the global blocklist
+* Add the High-DPI plugin banner
 
 = 1.2.3 =
 * Update the 'Tested up to' value
