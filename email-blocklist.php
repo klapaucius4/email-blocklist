@@ -229,7 +229,7 @@ class EmailBlocklist
 
     public function loadAdminStyle()
     {
-        wp_enqueue_style('embl_admin_css', plugin_dir_url(__FILE__) . 'assets/admin-style.css', false, '1.2.3');
+        wp_enqueue_style('embl-admin-style', plugin_dir_url(__FILE__) . 'assets/admin-style.css', false, '1.2.3');
     }
 
     /**
