@@ -2,7 +2,7 @@
 Contributors: klapaucius4
 Tags: disposable emails, temporary emails, validate email, spam prevention, user registration, wordpress security, fake accounts, block domains, antispam
 Requires at least: 5.2
-Tested up to: 6.9
+Tested up to: 6.9.1
 Stable tag: 1.2.5
 Requires PHP: 7.4
 License: GPLv2 or later
