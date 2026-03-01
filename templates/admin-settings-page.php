@@ -71,7 +71,7 @@ use EmailBlocklist\Helper;
                     </label>
                     <p class="label-desc"><?php esc_html_e('Number of domains', 'email-blocklist'); ?>: <?php echo esc_html(Helper::getGlobalBlocklistCount()); ?></p>
                     <p class="label-desc"><?php esc_html_e('Blocklist version', 'email-blocklist'); ?>: <?php echo esc_html(get_option('embl_global_blocklist_version', '-')); ?></p>
-                    <p class="label-desc"><?php esc_html_e('Updated', 'email-blocklist'); ?>: <?php echo esc_html(date('Y-m-d H:i:s', get_option('embl_global_blocklist_update_timestamp', 0))); ?></p>
+                    <p class="label-desc"><?php esc_html_e('Updated', 'email-blocklist'); ?>: <?php echo esc_html(wp_date('Y-m-d H:i:s', get_option('embl_global_blocklist_update_timestamp', 0))); ?></p>
                     <p class="mb-0"><a href="<?php echo esc_url(Helper::getUpdateGlobalBlocklistUrl()); ?>" class="button"><?php esc_html_e('Update global blocklist', 'email-blocklist'); ?></a></p>
                     <p class="label-desc"><?php esc_html_e('(the global blocklist is automatically updated daily by WP-Cron)', 'email-blocklist'); ?></p>
                 </th>
