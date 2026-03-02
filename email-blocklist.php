@@ -4,7 +4,7 @@
  * Plugin Name:       Email Blocklist
  * Plugin URI:        https://wordpress.org/plugins/email-blocklist/
  * Description:       Keep your WordPress site clean by blocking unwanted signups and comments with a blocklist of spam and temporary email domains.
- * Version:           1.2.6
+ * Version:           1.2.7
  * Requires at least: 5.2
  * Requires PHP:      7.4
  * Author:            Michał Kowalik
@@ -128,7 +128,7 @@ class EmailBlocklist
         }
 
         if (! empty($globalBlocklist) && $globalBlocklistVersion >= $decodedBlocklistMetaBody->blocklist_version) {
-            update_option('embl_global_blocklist_update_timestamp', current_time('timestamp'));
+            update_option('embl_global_blocklist_update_timestamp', time());
 
             return true;
         }
@@ -151,7 +151,7 @@ class EmailBlocklist
 
         update_option('embl_global_blocklist', $decodedBlocklistBody);
         update_option('embl_global_blocklist_version', $decodedBlocklistMetaBody->blocklist_version);
-        update_option('embl_global_blocklist_update_timestamp', current_time('timestamp'));
+        update_option('embl_global_blocklist_update_timestamp', time());
 
         return true;
     }
@@ -229,7 +229,7 @@ class EmailBlocklist
 
     public function loadAdminStyle()
     {
-        wp_enqueue_style('embl-admin-style', plugin_dir_url(__FILE__) . 'assets/admin-style.css', false, '1.2.6');
+        wp_enqueue_style('embl-admin-style', plugin_dir_url(__FILE__) . 'assets/admin-style.css', false, '1.2.7');
     }
 
     /**
