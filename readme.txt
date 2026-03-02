@@ -60,6 +60,7 @@ Yes, Email Blocklist integrates seamlessly with WordPress core registration and 
 == Changelog ==
 = 1.2.7 =
 * Fix the problem with the timezone of the global blocklist update timestamp
+* Update the global blocklist
 
 = 1.2.6 =
 * Update the 'Tested up to' value
