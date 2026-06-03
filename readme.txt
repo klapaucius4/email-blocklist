@@ -58,6 +58,10 @@ Absolutely. You can manage your own blocklist in the plugin settings.
 Yes, Email Blocklist integrates seamlessly with WordPress core registration and comments, and should work with most plugins that rely on standard email fields.
 
 == Changelog ==
+= 1.2.8 =
+* Tested for compatibility with WordPress 7.0
+* Update the global blocklist
+
 = 1.2.7 =
 * Fix the problem with the timezone of the global blocklist update timestamp
 * Update the global blocklist
